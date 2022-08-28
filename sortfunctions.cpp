@@ -1,5 +1,5 @@
-#include <string.h>
 #include <assert.h>
+#include <string.h>
 #include <ctype.h>
 #include "sortfunctions.h"
 
@@ -21,6 +21,7 @@ static const char alphabet[] = "ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäå¸æçèéêëìí
 String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *first, const void *second))
 {
     assert(strings != nullptr);
+    assert(funcptr != nullptr);
 
     for (size_t i = 0; i < n; ++i)
         assert(strings[i].value != nullptr);

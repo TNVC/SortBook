@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
 #include <assert.h>
 #include "fiofunctions.h"
 #include "line.h"

@@ -1,12 +1,12 @@
-#include <string.h>
 #include <assert.h>
-#include <ctype.h>
 #include "copyfunctions.h"
 #include "line.h"
 
 
 String *getStringArray(const char *buffer, size_t lines)
 {
+    assert(buffer != nullptr);
+
     String *strings = (String *) calloc(lines, sizeof(String));
 
     if (strings == nullptr)

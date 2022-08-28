@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 #include "line.h"
 #include "fiofunctions.h"
 #include "copyfunctions.h"
@@ -9,8 +8,6 @@
 
 int main(int argc, char *argv[])
 {
-    setlocale(LC_ALL, "");
-
     if (argc < 2)
     {
         printf("Incorrect use!!\n%s [file name]\n", argv[0]);
