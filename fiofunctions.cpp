@@ -2,135 +2,63 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-#include <ctype.h>
 #include "fiofunctions.h"
+#include "line.h"
 
-/// Read chars while meat '\\n'
-/// @details Function allocates memory in heap for string itself
-/// and if need automatic resize (and if need reallocates) string in heap
-///
-/// @param [out] strPointer Pointer to read string
-/// @param [out] n Pointer to length of read string
-/// @param [in] stream Chars input stream
-/// @return Count of chars in string with '\\0' or EOF if was error
-/// @note Read '\\0' too
-/// @note Don`t forget free() return address
-static size_t getline(char **strPointer, size_t *n, FILE *stream);
 
-char **readAllLines(size_t *size, FILE *fileptr)
+size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr)
 {
-    assert(size    != nullptr);
+    assert(buffer  != nullptr);
     assert(fileptr != nullptr);
+    assert(lines   != nullptr);
 
-    char **lines = nullptr;
+    fseek(fileptr, 0L, SEEK_END);
 
-    *size = 0;
+    size_t size = ftell(fileptr);
 
-    size_t linesSize = 16;
-    lines = (char **) calloc(linesSize, sizeof(char *));
+    rewind(fileptr);
 
-    if (lines == nullptr)
-        return nullptr;
+    *buffer = (char *) calloc(size, sizeof(char));
 
-    size_t temp = 0;//remove it
-
-    while (getline(&lines[(*size)++], &temp, fileptr) != (size_t) EOF)
-        if (*size >= linesSize)
-        {
-            linesSize *= 2;
-
-            lines = (char **) realloc(lines, linesSize * sizeof(char *));
-
-            if (lines == nullptr)
-            {
-                *size = 0;
-
-                return nullptr;
-            }
-        }
-
-    lines = (char **) realloc(lines, *size * sizeof(char *));
-
-    if (lines == nullptr)
-    {
-        *size = 0;
-
-        return nullptr;
-    }
-
-    return lines;
-}
-
-static size_t getline(char **strPointer, size_t *n, FILE *stream)
-{
-    assert(strPointer != nullptr);
-    assert(n          != nullptr);
-    assert(stream     != nullptr);
-
-    size_t size = 16;
-    *strPointer = (char *) calloc(size, sizeof(char));
+    if (*buffer == nullptr)
+        return (size_t) EOF;
 
     int ch = 0;
 
-    for (*n = 0; ch != '\n'; ++(*n))
+    *lines = 0;
+
+    for (size_t i = 0; (ch = getc(fileptr)) != EOF; ++i)
     {
-        if (*n >= size)
+        if (ch == '\n')
         {
-            size *= 2;
+            ++(*lines);
 
-            *strPointer = (char *) realloc(*strPointer, size);
-
-            if (*strPointer == nullptr)
-            {
-                *n = 0;
-
-                return (size_t) EOF;
-            }
+            ch = '\0';
         }
 
-        ch = getc(stream);
-
-        if (ch == EOF)
-        {
-            (*strPointer)[(*n)++] = '\0';
-
-            *strPointer = (char *) realloc(*strPointer, *n);
-
-            if (*strPointer == nullptr)
-            {
-                *n = 0;
-
-                return (size_t) EOF;
-            }
-
-            return (size_t) EOF;
-        }
-
-        (*strPointer)[*n] = (char) ch;
+        (*buffer)[i] = (char) ch;
     }
 
-    (*strPointer)[(*n)++] = '\0';
-
-    *strPointer = (char *) realloc(*strPointer, *n);
-
-    if (*strPointer == nullptr)
-    {
-        *n = 0;
-
-        return (size_t) EOF;
-    }
-
-    return *n;
+    return size;
 }
 
-void writeAllLines(char *strings[], size_t size, FILE *fileptr)
+void writeAllLines(String strings[], size_t size, FILE *fileptr)
 {
     assert(strings != nullptr);
     assert(fileptr != nullptr);
 
     for (size_t i = 0; i < size; ++i)
-        assert(strings[i] != nullptr);
+        assert(strings[i].value != nullptr);
 
     for (size_t i = 0; i < size; ++i)
-        fprintf(fileptr, "%s", strings[i]);
+        fprintf(fileptr, "%s\n", strings[i].value);
+}
+
+void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
+{
+    assert(buffer  != nullptr);
+    assert(fileptr != nullptr);
+
+    for (size_t i = 0; i < n; ++i)
+        putc(buffer[i] == '\0' ? '\n' : buffer[i], fileptr);
 }

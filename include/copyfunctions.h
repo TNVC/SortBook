@@ -1,18 +1,12 @@
 #ifndef COPYFUNCTIONS_H_
 #define COPYFUNCTIONS_H_
 
-#include <stdlib.h>
+#include "line.h"
 
-/// Free every string in array and array from heap
-/// @param [in] strings Array of strings
-/// @param [in] n Array length
-void cleanStringArray(char *strings[], size_t n);
-
-/// Copy string array in heap
-/// @param [in] strings Source array of strings
-/// @param [in] n Size of array
-/// @param [out] new_size Size of copy array
-/// @return Address of copy or NULL if was error
-char **copyStringArray(char *strings[], size_t n, size_t *new_size);
+/// Split buffer to String array
+/// @param [in] buffer Buffer with Strings
+/// @param [in] lines Count of lines in buffer
+/// @return Address in heap of String arrayor NULL if was error
+String *getStringArray(const char *buffer, size_t lines);
 
 #endif

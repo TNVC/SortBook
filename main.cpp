@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include <locale.h>
+#include "line.h"
 #include "fiofunctions.h"
 #include "copyfunctions.h"
 #include "sortfunctions.h"
@@ -33,49 +32,42 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    char **originLines = nullptr;
+    char *originLines = nullptr;
 
-    size_t size = 0;
+    size_t size = 0, lines = 0;
 
-    originLines = readAllLines(&size, fileptr);
+    size = readAllLines(&originLines, &lines, fileptr);
 
     fclose(fileptr);
 
-    if (originLines == nullptr)
+    if (size == (size_t) EOF)
     {
         printf("Line %d: Out of memory exception!!\n", __LINE__);
 
         return 0;
     }
 
-    char **copyLines = nullptr;
+    String *strings = getStringArray(originLines, lines);
 
-    size_t copySize = 0;
-
-    copyLines = copyStringArray(originLines, size, &copySize);
-
-    if (copyLines == nullptr)
-    {
-        printf("Line %d: Out of memory exception!!\n", __LINE__);
-
-        return 0;
-    }
-
-    sortByChapters(copyLines, copySize, '#');
+    sortStringArray(strings, lines, stringComparator);
 
     FILE *targetFile = fopen("sortbook.txt", "w");
 
     if (targetFile == nullptr)
         return 0;
 
-    writeAllLines(copyLines  , copySize, targetFile);
-    writeAllLines(originLines, size    , targetFile);
+    writeAllLines(strings, lines, targetFile);
 
+    sortStringArray(strings, lines, reverseStringComparator);
+
+    writeAllLines(strings, lines, targetFile);
+
+    writeBuffer(originLines, size, targetFile);
 
     fclose(targetFile);
 
-    cleanStringArray(originLines, size);
-    cleanStringArray(copyLines  , copySize);
+    free(originLines);
+    free(strings);
 
     return 0;
 }

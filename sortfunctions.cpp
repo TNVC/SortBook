@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <ctype.h>
@@ -20,39 +18,12 @@ static int isLetter(char ch);
 static const char alphabet[] = "ÀÁÂÃÄÅ¨ÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖ×ØÙÚÛÜİŞßàáâãäå¸æçèéêëìíîïğñòóôõö÷øùúûüışÿ";
 
 
-char **sortByChapters(char *strings[], size_t n, char newChapterSep)
+String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *first, const void *second))
 {
     assert(strings != nullptr);
 
     for (size_t i = 0; i < n; ++i)
-        assert(strings[i] != nullptr);
-
-    int chapterCount = -1;
-
-    char **chapterStart = strings;
-    size_t chapterLen   = 0;
-
-    for (size_t i = 0; i < n; ++i, ++chapterLen)
-        if (strings[i][0] == newChapterSep)
-        {
-            ++chapterCount;
-
-            sortStringArray(chapterStart, chapterLen - 1, chapterCount == 3 ? reverseStringComparator : stringComparator);
-
-            chapterStart = strings + i + 1;
-
-            chapterLen = 0;
-        }
-
-    return strings;
-}
-
-char **sortStringArray(char *strings[], size_t n, int (*funcptr)(const void *first, const void *second))
-{
-    assert(strings != nullptr);
-
-    for (size_t i = 0; i < n; ++i)
-        assert(strings[i] != nullptr);
+        assert(strings[i].value != nullptr);
 
     qsort(strings, n, sizeof(char *), funcptr);
 
@@ -64,23 +35,23 @@ int stringComparator(const void *first, const void *second)
     assert(first  != nullptr);
     assert(second != nullptr);
 
-    const char *fstring = *((const char **) first);
-    const char *sstring = *((const char **) second);
+    const String *fstring = (const String *) first;
+    const String *sstring = (const String *) second;
 
     size_t i = 0, j = 0;
 
-    while (fstring[i] && sstring[j])
+    while (fstring->value[i] && sstring->value[j])
     {
-        while (!isLetter(fstring[i]) && fstring[i] != '\0')
+        while (!isLetter(fstring->value[i]) && fstring->value[i] != '\0')
             ++i;
 
-        while (!isLetter(sstring[j]) && sstring[j] != '\0')
+        while (!isLetter(sstring->value[j]) && sstring->value[j] != '\0')
             ++j;
 
-        if (fstring[i] == '\0' || sstring[j] == '\0')
+        if (fstring->value[i] == '\0' || sstring->value[j] == '\0')
             continue;
 
-        int compRes = charComparator(fstring[i], sstring[j]);
+        int compRes = charComparator(fstring->value[i], sstring->value[j]);
 
         if (compRes == 0)
         {
@@ -92,7 +63,7 @@ int stringComparator(const void *first, const void *second)
         return compRes;
     }
 
-    return charComparator(fstring[i], sstring[j]);
+    return charComparator(fstring->value[i], sstring->value[j]);
 }
 
 int reverseStringComparator(const void *first, const void *second)
@@ -100,23 +71,23 @@ int reverseStringComparator(const void *first, const void *second)
     assert(first  != nullptr);
     assert(second != nullptr);
 
-    const char *fstring = *((const char **) first);
-    const char *sstring = *((const char **) second);
+    const String *fstring = (const String *) first;
+    const String *sstring = (const String *) second;
 
-    size_t i = strlen(fstring) - 1, j = strlen(sstring) - 1;
+    size_t i = strlen(fstring->value) - 1, j = strlen(sstring->value) - 1;
 
     while (i > 0 && j > 0)
     {
-        while (!isLetter(fstring[i]) && i > 0)
+        while (!isLetter(fstring->value[i]) && i > 0)
             --i;
 
-        while (!isLetter(sstring[j]) && j > 0)
+        while (!isLetter(sstring->value[j]) && j > 0)
             --j;
 
         if (i == 0 || j == 0)
             continue;
 
-        int compRes = charComparator(fstring[i], sstring[j]);
+        int compRes = charComparator(fstring->value[i], sstring->value[j]);
 
         if (compRes == 0)
         {
@@ -128,7 +99,7 @@ int reverseStringComparator(const void *first, const void *second)
         return compRes;
     }
 
-    return charComparator(fstring[i], sstring[j]);
+    return charComparator(fstring->value[i], sstring->value[j]);
 }
 
 static int charComparator(char first, char second)
