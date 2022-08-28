@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
+#include <ctype.h>
 #include "fiofunctions.h"
 
 /// Read chars while meat '\\n'
@@ -119,4 +121,16 @@ static size_t getline(char **strPointer, size_t *n, FILE *stream)
     }
 
     return *n;
+}
+
+void writeAllLines(char *strings[], size_t size, FILE *fileptr)
+{
+    assert(strings != nullptr);
+    assert(fileptr != nullptr);
+
+    for (size_t i = 0; i < size; ++i)
+        assert(strings[i] != nullptr);
+
+    for (size_t i = 0; i < size; ++i)
+        fprintf(fileptr, "%s", strings[i]);
 }
