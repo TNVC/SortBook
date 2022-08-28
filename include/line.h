@@ -3,6 +3,7 @@
 
 typedef struct {
     const char *value;
+    size_t size;
 } String;
 
 #endif

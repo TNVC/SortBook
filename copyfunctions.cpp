@@ -12,14 +12,20 @@ String *getStringArray(const char *buffer, size_t lines)
     if (strings == nullptr)
         return nullptr;
 
-    size_t currentLine = 0;
+    size_t currentLine = 0, lineSize = 0;
 
     for (size_t i = 0; currentLine < lines; )
     {
-        strings[currentLine++].value = buffer + i;
+        strings[currentLine].value  = buffer + i;
 
         while (buffer[i++])
-            continue;
+            ++lineSize;
+
+        strings[currentLine++].size = lineSize;
+
+        lineSize = 0;
+
+        ++i;
     }
 
     return strings;

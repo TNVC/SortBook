@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include "line.h"
 #include "fiofunctions.h"
 #include "copyfunctions.h"
@@ -8,6 +9,8 @@
 
 int main(int argc, char *argv[])
 {
+    setlocale(LC_ALL, "");
+
     if (argc < 2)
     {
         printf("Incorrect use!!\n%s [file name]\n", argv[0]);
@@ -20,7 +23,7 @@ int main(int argc, char *argv[])
 
     FILE *fileptr = nullptr;
 
-    fileptr = fopen(argv[1], "r");
+    fileptr = fopen(argv[1], "rb");
 
     if (fileptr == nullptr)
     {

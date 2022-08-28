@@ -1,6 +1,9 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+
+#include <stdio.h>
+
 #include "sortfunctions.h"
 
 /// Compare two Kirilic or zero chars
@@ -41,6 +44,8 @@ int stringComparator(const void *first, const void *second)
 
     size_t i = 0, j = 0;
 
+    printf("1 i:%zd,j:%zd, %p\n", i, j,sstring);
+
     while (fstring->value[i] && sstring->value[j])
     {
         while (!isLetter(fstring->value[i]) && fstring->value[i] != '\0')
@@ -75,7 +80,7 @@ int reverseStringComparator(const void *first, const void *second)
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
 
-    size_t i = strlen(fstring->value) - 1, j = strlen(sstring->value) - 1;
+    size_t i = fstring->size - 1, j = sstring->size - 1;
 
     while (i > 0 && j > 0)
     {
@@ -121,7 +126,7 @@ static int charComparator(char first, char second)
     return fNum - sNum;
 }
 
-static int isLetter(char ch)
+static int isLetter(char ch)  // this is krivo!!!
 {
     for (int i = 0; alphabet[i]; ++i)
         if (ch == alphabet[i])

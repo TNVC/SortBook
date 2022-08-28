@@ -4,6 +4,10 @@
 #include "fiofunctions.h"
 #include "line.h"
 
+/// Return file size
+/// @param [in] fileptr File
+/// @return Size of file in byte
+static size_t getFileSize(FILE *fileptr);
 
 size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr)
 {
@@ -11,32 +15,25 @@ size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr)
     assert(fileptr != nullptr);
     assert(lines   != nullptr);
 
-    fseek(fileptr, 0L, SEEK_END);
-
-    size_t size = ftell(fileptr);
-
-    rewind(fileptr);
+    size_t size = getFileSize(fileptr);
 
     *buffer = (char *) calloc(size, sizeof(char));
 
     if (*buffer == nullptr)
         return (size_t) EOF;
 
-    int ch = 0;
+    fread(*buffer, sizeof(char), size, fileptr);
 
     *lines = 0;
 
-    for (size_t i = 0; (ch = getc(fileptr)) != EOF; ++i)
-    {
-        if (ch == '\n')
+    for (size_t i = 0; i < size; ++i)
+        if ((*buffer)[i] == '\n')
         {
             ++(*lines);
 
-            ch = '\0';
+            (*buffer)[i - 1] = '\0';
+            (*buffer)[i]     = '\0';
         }
-
-        (*buffer)[i] = (char) ch;
-    }
 
     return size;
 }
@@ -59,5 +56,25 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
     assert(fileptr != nullptr);
 
     for (size_t i = 0; i < n; ++i)
-        putc(buffer[i] == '\0' ? '\n' : buffer[i], fileptr);
+    {
+        if (buffer[i] == '\0')
+        {
+            ++i;
+
+            putc('\n', fileptr);
+        }
+        else
+            putc(buffer[i], fileptr);
+    }
+}
+
+static size_t getFileSize(FILE *fileptr)
+{
+    fseek(fileptr, 0L, SEEK_END);
+
+    size_t size = ftell(fileptr);
+
+    rewind(fileptr);
+
+    return size;
 }
