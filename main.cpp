@@ -49,12 +49,19 @@ int main(int argc, char *argv[])
 
     String *strings = getStringArray(originLines, lines);
 
+    FILE *file = fopen("sortbook.txt", "w");
+
+    for (size_t i = 0; i < lines; ++i)
+        fprintf(file, "%p\n", strings[i].value);
+
+    printf("%zd\n", lines);
     sortStringArray(strings, lines, stringComparator);
 
     FILE *targetFile = fopen("sortbook.txt", "w");
 
     if (targetFile == nullptr)
         return 0;
+
 
     writeAllLines(strings, lines, targetFile);
 

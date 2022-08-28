@@ -6,6 +6,7 @@
 
 #include "sortfunctions.h"
 
+
 /// Compare two Kirilic or zero chars
 /// @param [in] first First char
 /// @param [in] second Second char
@@ -44,8 +45,6 @@ int stringComparator(const void *first, const void *second)
 
     size_t i = 0, j = 0;
 
-    printf("1 i:%zd,j:%zd, %p\n", i, j,sstring);
-
     while (fstring->value[i] && sstring->value[j])
     {
         while (!isLetter(fstring->value[i]) && fstring->value[i] != '\0')
@@ -81,6 +80,8 @@ int reverseStringComparator(const void *first, const void *second)
     const String *sstring = (const String *) second;
 
     size_t i = fstring->size - 1, j = sstring->size - 1;
+
+    printf("i: %zd, j: %zd\n", i, j);
 
     while (i > 0 && j > 0)
     {
