@@ -31,8 +31,16 @@ size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr)
         {
             ++(*lines);
 
+            #if defined OS_WINDOWS_
+
             (*buffer)[i - 1] = '\0';
             (*buffer)[i]     = '\0';
+
+            #else
+
+            (*buffer)[i]     = '\0';
+
+            #endif
         }
 
     return size;
@@ -59,7 +67,12 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
     {
         if (buffer[i] == '\0')
         {
+
+            #if defined OS_WINDOWS_
+
             ++i;
+
+            #endif
 
             putc('\n', fileptr);
         }

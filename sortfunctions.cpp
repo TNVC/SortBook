@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #include "sortfunctions.h"
 
 
@@ -101,8 +102,8 @@ static int charComparator(char first, char second)
     first  = (char) toupper(first );
     second = (char) toupper(second);
 
-    char *nearFirst  = strchr("ÅÆ", first);
-    char *nearSecond = strchr("ÅÆ", second);
+    char *nearFirst  = (char *) strchr("ÅÆ", first);
+    char *nearSecond = (char *) strchr("ÅÆ", second);
 
     if ((first == '¨' || second  == '¨') &&  nearFirst == nullptr && nearSecond == nullptr)
     {

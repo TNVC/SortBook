@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <assert.h>
 #include "copyfunctions.h"
 #include "line.h"
@@ -25,7 +26,11 @@ String *getStringArray(const char *buffer, size_t lines)
 
         lineSize = 0;
 
+        #if defined OS_WINDOWS_
+
         ++i;
+
+        #endif
     }
 
     return strings;

@@ -2,6 +2,9 @@
 #define FIOFUNCTIONS_H_
 
 #include "line.h"
+#include <stddef.h>
+
+static const char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 
 /// Read every file line in buffer
 /// @param [out] buffer Address of pointer to buffer

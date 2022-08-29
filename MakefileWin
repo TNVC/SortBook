@@ -3,20 +3,21 @@ FLAGS=-Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal 
 SOURCE=main.cpp fiofunctions.cpp copyfunctions.cpp sortfunctions.cpp
 OBJECTS=${SOURCE:.cpp=.o}
 INCLUDE=include
+OS=OS_WINDOWS_
 
 all: sortbook
 
 sortbook: ${OBJECTS}
 	@${CC} ${OBJECTS}
 	
-main.o: main.cpp
+main.o: main.cpp ${INCLUDE}/fiofunctions.h
 	@${CC} -c -I ${INCLUDE} ${FLAGS} main.cpp
 	
 fiofunctions.o: fiofunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} fiofunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} -D ${OS} fiofunctions.cpp 
 	
 copyfunctions.o: copyfunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} copyfunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} -D ${OS} copyfunctions.cpp
 
 sortfunctions.o: sortfunctions.cpp
 	@${CC} -c -I ${INCLUDE} ${FLAGS} sortfunctions.cpp

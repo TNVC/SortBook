@@ -13,13 +13,16 @@ int main(int argc, char *argv[])
 
     if (argc < 2)
     {
-        printf("Incorrect use!!\n%s [file name]\n", argv[0]);
+        printf("Incorrect use!!\n%s [source file name] [target file name]\n", argv[0]);
 
         return 0;
     }
 
-    if (argc > 2)
-        printf("Incorrect use!!\n%s [file name]\n", argv[0]);
+    if (argc < 3 || argc > 3)
+        printf("Incorrect use!!\n%s [source file name] [target file name]\n", argv[0]);
+
+    if (argc < 3)
+        printf("Set target file to default: \"%s\"\n", DEFAULT_TARGET_FILE_NAME);
 
     FILE *fileptr = nullptr;
 
@@ -47,10 +50,19 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    FILE *targetFile = fopen("sortbook.txt", "w");
+    FILE *targetFile;
+
+    if (argc >= 3)
+        targetFile = fopen(argv[2]                 , "w");
+    else
+        targetFile = fopen(DEFAULT_TARGET_FILE_NAME, "w");
 
     if (targetFile == nullptr)
+    {
+        printf("Fail to open \"%s\"!!\n", argc >= 3 ? argv[2] : DEFAULT_TARGET_FILE_NAME);
+
         return 0;
+    }
 
     String *strings = getStringArray(originLines, lines);
 
