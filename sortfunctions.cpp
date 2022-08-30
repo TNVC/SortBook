@@ -3,6 +3,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "sortfunctions.h"
+#include "stringassert.h"
+#include "newmergesort.h"
 
 
 /// Compare two Kirilic or zero chars
@@ -17,10 +19,14 @@ String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *f
     assert(strings != nullptr);
     assert(funcptr != nullptr);
 
-    for (size_t i = 0; i < n; ++i)
-        assert(strings[i].value != nullptr);
+    #ifndef NOT_DEBUG_MODE_
 
-    qsort(strings, n, sizeof(String), funcptr);
+    for (size_t i = 0; i < n; ++i)
+        stringAssert(strings[i].buff != nullptr, i);
+
+    #endif
+
+    newMergeSort(strings, n, sizeof(String), funcptr);
 
     return strings;
 }
@@ -35,30 +41,26 @@ int stringComparator(const void *first, const void *second)
 
     size_t i = 0, j = 0;
 
-    while (fstring->value[i] && sstring->value[j])
+    while (fstring->buff[i] && sstring->buff[j])
     {
-        while (!(isalpha(fstring->value[i]) || fstring->value[i] == 'ÿ') && fstring->value[i] != '\0')
+        while (!(isalpha(fstring->buff[i]) || fstring->buff[i] == 'ÿ') && fstring->buff[i] != '\0')///remake
             ++i;
 
-        while (!(isalpha(sstring->value[j]) || sstring->value[j] == 'ÿ') && sstring->value[j] != '\0')
+        while (!(isalpha(sstring->buff[j]) || sstring->buff[j] == 'ÿ') && sstring->buff[j] != '\0')
             ++j;
 
-        if (fstring->value[i] == '\0' || sstring->value[j] == '\0')
+        if (fstring->buff[i] == '\0' || sstring->buff[j] == '\0')
             continue;
 
-        int compRes = charComparator(fstring->value[i], sstring->value[j]);
+        int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 
-        if (compRes == 0)
-        {
-            ++i, ++j;
+        if (compRes != 0)
+            return compRes;
 
-            continue;
-        }
-
-        return compRes;
+        ++i, ++j;
     }
 
-    return charComparator(fstring->value[i], sstring->value[j]);
+    return charComparator(fstring->buff[i], sstring->buff[j]);
 }
 
 int reverseStringComparator(const void *first, const void *second)
@@ -73,28 +75,24 @@ int reverseStringComparator(const void *first, const void *second)
 
     while (i > 0 && j > 0)
     {
-        while (!(isalpha(fstring->value[i]) || fstring->value[i] == 'ÿ') && i > 0)
+        while (!(isalpha(fstring->buff[i]) || fstring->buff[i] == 'ÿ') && i > 0)
             --i;
 
-        while (!(isalpha(sstring->value[j]) || sstring->value[j] == 'ÿ') && j > 0)
+        while (!(isalpha(sstring->buff[j]) || sstring->buff[j] == 'ÿ') && j > 0)
             --j;
 
         if (i == 0 || j == 0)
-            continue;
+            break;
 
-        int compRes = charComparator(fstring->value[i], sstring->value[j]);
+        int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 
-        if (compRes == 0)
-        {
-            --i, --j;
+        if (compRes != 0)
+            return compRes;
 
-            continue;
-        }
-
-        return compRes;
+        --i, --j;
     }
 
-    return charComparator(fstring->value[i], sstring->value[j]);
+    return charComparator(fstring->buff[i], sstring->buff[j]);
 }
 
 static int charComparator(char first, char second)
@@ -113,7 +111,7 @@ static int charComparator(char first, char second)
     else if (first  == '¨' && nearSecond)
         return (second == 'Å') ?  1 : -1;
     else if (second == '¨' && nearFirst)
-        return (first == 'Å')  ? -1 :  1;
+        return (first  == 'Å') ? -1 :  1;
 
     return first - second;
 }

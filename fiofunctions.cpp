@@ -1,47 +1,39 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <ctype.h>
 #include "fiofunctions.h"
 #include "line.h"
+#include "stringassert.h"
+
+/// Check that string has only space chars
+/// @param [in] str Source string
+/// @return 1 if string is space or 0 if string isn`t space
+static int isSpaceString(const String *str);
 
 /// Return file size
 /// @param [in] fileptr File
 /// @return Size of file in byte
 static size_t getFileSize(FILE *fileptr);
 
-size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr)
+size_t readAllLines(char **buffer, FILE *fileptr)
 {
     assert(buffer  != nullptr);
     assert(fileptr != nullptr);
-    assert(lines   != nullptr);
 
     size_t size = getFileSize(fileptr);
 
     *buffer = (char *) calloc(size, sizeof(char));
 
     if (*buffer == nullptr)
-        return (size_t) EOF;
+        return OUT_OF_MEM;
 
-    fread(*buffer, sizeof(char), size, fileptr);
+    if (fread(*buffer, sizeof(char), size, fileptr) != size)
+    {
+        free(*buffer);
 
-    *lines = 0;
-
-    for (size_t i = 0; i < size; ++i)
-        if ((*buffer)[i] == '\n')
-        {
-            ++(*lines);
-
-            #if defined OS_WINDOWS_
-
-            (*buffer)[i - 1] = '\0';
-            (*buffer)[i]     = '\0';
-
-            #else
-
-            (*buffer)[i]     = '\0';
-
-            #endif
-        }
+        return (size_t) OUT_OF_MEM;
+    }
 
     return size;
 }
@@ -51,11 +43,16 @@ void writeAllLines(String strings[], size_t size, FILE *fileptr)
     assert(strings != nullptr);
     assert(fileptr != nullptr);
 
-    for (size_t i = 0; i < size; ++i)
-        assert(strings[i].value != nullptr);
+    #ifndef NOT_DEBUG_MODE_
 
     for (size_t i = 0; i < size; ++i)
-        fprintf(fileptr, "%s\n", strings[i].value);
+        stringAssert(strings[i].buff != nullptr, i);
+
+    #endif
+
+    for (size_t i = 0; i < size; ++i)
+        if (!isSpaceString(&strings[i]))
+            fprintf(fileptr, "%s\n", strings[i].buff);
 }
 
 void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
@@ -79,6 +76,14 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
         else
             putc(buffer[i], fileptr);
     }
+}
+
+static int isSpaceString(const String *str)
+{
+    for (size_t i = 0; str->buff[i] != '\0'; ++i)
+        if (!isspace(str->buff[i]))
+            return 0;
+    return 1;
 }
 
 static size_t getFileSize(FILE *fileptr)

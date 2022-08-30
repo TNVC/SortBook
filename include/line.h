@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 typedef struct {
-    const char *value;
+    const char *buff;
     size_t size;
 } String;
 

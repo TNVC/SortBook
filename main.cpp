@@ -7,8 +7,55 @@
 #include "sortfunctions.h"
 
 
+void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray,
+                  size_t firstSize    , size_t secondSize    , size_t elementSize,
+                  int (*comparator)(const void *, const void *));
+
+
+
+static const char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
+
+
+int compInt(const void *f, const void *s)
+{
+    return *((const int *)f) - *((const int *)s);
+}
+
+void setArr(int *arr, const int val[], int n)
+{
+    for (int i = 0; i< n; ++i)
+        arr[i] = val[i];
+}
+
+
 int main(int argc, char *argv[])
 {
+
+#ifdef NNNNNNNNNNNNNNNNN
+
+    int *first = (int *) calloc(10, sizeof(int));
+    int *second = (int *) calloc(11, sizeof(int));
+    int *target = (int *) calloc(21, sizeof(int));
+
+    int tempF[] = {1, 2, 3, 6, 7, 10, 12, 13, 15, 20};
+    int tempS[] ={4, 5, 8, 9, 11, 14, 16, 17, 18, 19, 19};
+
+    setArr(first, tempF, 10);
+    setArr(second, tempS, 11);
+
+    merge(first, second, target, 10, 11, sizeof(int), compInt);
+
+    for (int i = 0; i < 21; ++i)
+        printf("%d: %d\n", i, target[i]);
+
+    free(first);
+    free(second);
+    free(target);
+
+    return 0;
+
+#endif
+
     setlocale(LC_ALL, "");
 
     if (argc < 2)
@@ -37,20 +84,20 @@ int main(int argc, char *argv[])
 
     char *originLines = nullptr;
 
-    size_t size = 0, lines = 0;
+    size_t size = 0;
 
-    size = readAllLines(&originLines, &lines, fileptr);
+    size = readAllLines(&originLines, fileptr);
 
     fclose(fileptr);
 
-    if (size == (size_t) EOF)
+    if (size == (size_t) OUT_OF_MEM)
     {
         printf("Line %d: Out of memory exception!!\n", __LINE__);
 
         return 0;
     }
 
-    FILE *targetFile;
+    FILE *targetFile = nullptr;
 
     if (argc >= 3)
         targetFile = fopen(argv[2]                 , "w");
@@ -61,10 +108,14 @@ int main(int argc, char *argv[])
     {
         printf("Fail to open \"%s\"!!\n", argc >= 3 ? argv[2] : DEFAULT_TARGET_FILE_NAME);
 
+        free(originLines);
+
         return 0;
     }
 
-    String *strings = getStringArray(originLines, lines);
+    size_t lines = 0;
+
+    String *strings = getStringArray(originLines, size, &lines);
 
     sortStringArray(strings, lines, stringComparator);
 

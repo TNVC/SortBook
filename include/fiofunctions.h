@@ -4,15 +4,15 @@
 #include "line.h"
 #include <stddef.h>
 
-static const char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
+static const int OUT_OF_MEM = -1;
+
 
 /// Read every file line in buffer
 /// @param [out] buffer Address of pointer to buffer
-/// @param [out] lines Count of lines in file
 /// @param [in] fileptr File which need to read
 /// @return Size of buffer in heap
-/// @note If was error return EOF
-size_t readAllLines(char **buffer, size_t *lines, FILE *fileptr);
+/// @note If was error return OUT_OF_MEM
+size_t readAllLines(char **buffer, FILE *fileptr);
 
 /// Write every line in file
 /// @param [in] strings String array

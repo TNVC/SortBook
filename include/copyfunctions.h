@@ -5,8 +5,9 @@
 
 /// Split buffer to String array
 /// @param [in] buffer Buffer with Strings
-/// @param [in] lines Count of lines in buffer
-/// @return Address in heap of String arrayor NULL if was error
-String *getStringArray(const char *buffer, size_t lines);
+/// @param [in] size Size of  buffer
+/// @param [out] lines Count of lines in file
+/// @return Address in heap of String array or NULL if was error
+String *getStringArray(char *buffer, size_t size, size_t *lines);
 
 #endif
