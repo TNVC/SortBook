@@ -52,7 +52,7 @@ int stringComparator(const void *first, const void *second)
         while (skipChar(fstring->buff[i]) && fstring->buff[i] != '\0')
             ++i;
 
-        while (skipChar(sstring->buff[i]) && sstring->buff[j] != '\0')
+        while (skipChar(sstring->buff[j]) && sstring->buff[j] != '\0')
             ++j;
 
         if (fstring->buff[i] == '\0' || sstring->buff[j] == '\0')
@@ -85,7 +85,7 @@ int reverseStringComparator(const void *first, const void *second)
         while (skipChar(fstring->buff[i]) && i > 0)
             --i;
 
-        while (skipChar(sstring->buff[i]) && j > 0)
+        while (skipChar(sstring->buff[j]) && j > 0)
             --j;
 
         if (i == 0 || j == 0)
