@@ -6,9 +6,7 @@
 #include "copyfunctions.h"
 #include "sortfunctions.h"
 
-
 const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
-
 
 int main(int argc, char *argv[])
 {

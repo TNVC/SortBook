@@ -1,9 +1,9 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <assert.h>
+#include <stdlib.h>
 #include <ctype.h>
-#include "fiofunctions.h"
+#include <assert.h>
 #include "line.h"
+#include "fiofunctions.h"
 #include "stringassert.h"
 
 /// Check that string has only space chars
@@ -26,7 +26,7 @@ size_t readAllLines(char **buffer, FILE *fileptr)
     *buffer = (char *) calloc(size, sizeof(char));
 
     if (*buffer == nullptr)
-        return OUT_OF_MEM;
+        return (size_t) OUT_OF_MEM;
 
     if (fread(*buffer, sizeof(char), size, fileptr) != size)
     {
@@ -80,14 +80,19 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
 
 static int isSpaceString(const String *str)
 {
+    assert(str != nullptr);
+
     for (size_t i = 0; str->buff[i] != '\0'; ++i)
         if (!isspace(str->buff[i]))
             return 0;
+
     return 1;
 }
 
 static size_t getFileSize(FILE *fileptr)
 {
+    assert(fileptr != nullptr);
+
     fseek(fileptr, 0L, SEEK_END);
 
     size_t size = ftell(fileptr);

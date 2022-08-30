@@ -1,11 +1,10 @@
-#include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
+#include <assert.h>
 #include "sortfunctions.h"
-#include "stringassert.h"
 #include "newmergesort.h"
-
+#include "stringassert.h"
 
 /// Compare two Kirilic or zero chars
 /// @param [in] first First char
@@ -13,6 +12,13 @@
 /// @return 0 if first == second, negative value if first < second, positive value if first > second
 static int charComparator(char first, char second);
 
+/// Skip each not alpha char
+/// @param [in] ch Source char
+/// @return 1 if want to skip and 0 if don`t want to skip
+inline int skipChar(char ch)
+{
+    return !(isalpha(ch) || ch == 'ÿ');
+}
 
 String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *first, const void *second))
 {
@@ -43,10 +49,10 @@ int stringComparator(const void *first, const void *second)
 
     while (fstring->buff[i] && sstring->buff[j])
     {
-        while (!(isalpha(fstring->buff[i]) || fstring->buff[i] == 'ÿ') && fstring->buff[i] != '\0')///remake
+        while (skipChar(fstring->buff[i]) && fstring->buff[i] != '\0')
             ++i;
 
-        while (!(isalpha(sstring->buff[j]) || sstring->buff[j] == 'ÿ') && sstring->buff[j] != '\0')
+        while (skipChar(sstring->buff[i]) && sstring->buff[j] != '\0')
             ++j;
 
         if (fstring->buff[i] == '\0' || sstring->buff[j] == '\0')
@@ -71,14 +77,15 @@ int reverseStringComparator(const void *first, const void *second)
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
 
-    size_t i = fstring->size - 1, j = sstring->size - 1;
+    size_t i = fstring->size - 1,
+           j = sstring->size - 1;
 
     while (i > 0 && j > 0)
     {
-        while (!(isalpha(fstring->buff[i]) || fstring->buff[i] == 'ÿ') && i > 0)
+        while (skipChar(fstring->buff[i]) && i > 0)
             --i;
 
-        while (!(isalpha(sstring->buff[j]) || sstring->buff[j] == 'ÿ') && j > 0)
+        while (skipChar(sstring->buff[i]) && j > 0)
             --j;
 
         if (i == 0 || j == 0)
@@ -100,7 +107,7 @@ static int charComparator(char first, char second)
     first  = (char) toupper(first );
     second = (char) toupper(second);
 
-    char *nearFirst  = (char *) strchr("ÅÆ", first);
+    char *nearFirst  = (char *) strchr("ÅÆ", first );
     char *nearSecond = (char *) strchr("ÅÆ", second);
 
     if ((first == '¨' || second  == '¨') &&  nearFirst == nullptr && nearSecond == nullptr)

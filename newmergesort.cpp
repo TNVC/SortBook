@@ -1,9 +1,7 @@
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
-#include <stdio.h>
 #include "newmergesort.h"
-
 
 /// One merge iteration into source
 /// @param [in] source Source array
@@ -87,7 +85,8 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
             if (firstSize == 0)
                 continue;
 
-            if (comparator(first + (firstSize - 1)*elementSize, first + firstSize*elementSize) > 0)
+            if (comparator(first + (firstSize - 1)*elementSize,
+                           first +  firstSize     *elementSize) > 0)
                 break;
         }
 
@@ -105,7 +104,8 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
             if (secondSize == 0)
                 continue;
 
-            if (comparator(second + (secondSize - 1)*elementSize, second + secondSize*elementSize) > 0)
+            if (comparator(second + (secondSize - 1)*elementSize,
+                           second +  secondSize     *elementSize) > 0)
                 break;
         }
 

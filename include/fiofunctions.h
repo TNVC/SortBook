@@ -1,15 +1,14 @@
 #ifndef FIOFUNCTIONS_H_
 #define FIOFUNCTIONS_H_
 
-#include "line.h"
 #include <stddef.h>
+#include "line.h"
 
 static const int OUT_OF_MEM = -1;
 
-
 /// Read every file line in buffer
 /// @param [out] buffer Address of pointer to buffer
-/// @param [in] fileptr File which need to read
+/// @param [in] fileptr File which need to read in bin mode
 /// @return Size of buffer in heap
 /// @note If was error return OUT_OF_MEM
 size_t readAllLines(char **buffer, FILE *fileptr);
