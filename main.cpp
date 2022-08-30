@@ -6,56 +6,11 @@
 #include "copyfunctions.h"
 #include "sortfunctions.h"
 
-
-void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray,
-                  size_t firstSize    , size_t secondSize    , size_t elementSize,
-                  int (*comparator)(const void *, const void *));
-
-
-
-static const char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
-
-
-int compInt(const void *f, const void *s)
-{
-    return *((const int *)f) - *((const int *)s);
-}
-
-void setArr(int *arr, const int val[], int n)
-{
-    for (int i = 0; i< n; ++i)
-        arr[i] = val[i];
-}
+const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 
 
 int main(int argc, char *argv[])
 {
-
-#ifdef NNNNNNNNNNNNNNNNN
-
-    int *first = (int *) calloc(10, sizeof(int));
-    int *second = (int *) calloc(11, sizeof(int));
-    int *target = (int *) calloc(21, sizeof(int));
-
-    int tempF[] = {1, 2, 3, 6, 7, 10, 12, 13, 15, 20};
-    int tempS[] ={4, 5, 8, 9, 11, 14, 16, 17, 18, 19, 19};
-
-    setArr(first, tempF, 10);
-    setArr(second, tempS, 11);
-
-    merge(first, second, target, 10, 11, sizeof(int), compInt);
-
-    for (int i = 0; i < 21; ++i)
-        printf("%d: %d\n", i, target[i]);
-
-    free(first);
-    free(second);
-    free(target);
-
-    return 0;
-
-#endif
-
     setlocale(LC_ALL, "");
 
     if (argc < 2)

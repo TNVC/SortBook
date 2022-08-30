@@ -26,7 +26,7 @@ String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *f
 
     #endif
 
-    newMergeSort(strings, n, sizeof(String), funcptr);
+    qsort(strings, n, sizeof(String), funcptr);
 
     return strings;
 }
