@@ -5,29 +5,13 @@
 #include "fiofunctions.h"
 #include "copyfunctions.h"
 #include "sortfunctions.h"
-#include "newmergesort.h"
+
 
 const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 
-int compInt(const void *f, const void *s)
-{
-    return *((const int*)f) - *((const int*)s);
-}
 
 int main(int argc, char *argv[])
 {
-    const int s = 12;
-
-    int arr[] = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-
-    newMergeSort(arr, s, sizeof(int), compInt);
-
-    for (int i = 0; i < s; ++i)
-        printf("%d ", arr[i]);
-    putchar('\n');
-
-    return 0;
-
     setlocale(LC_ALL, "");
 
     if (argc < 2)
@@ -89,15 +73,13 @@ int main(int argc, char *argv[])
 
     String *strings = getStringArray(originLines, size, &lines);
 
-    size_t nn = 10;
+    sortStringArray(strings, lines, stringComparator);
 
-    sortStringArray(strings, nn, stringComparator);
+    writeAllLines(strings, lines, targetFile);
 
-    writeAllLines(strings, nn, targetFile);
+    sortStringArray(strings, lines, reverseStringComparator);
 
-    sortStringArray(strings, nn, reverseStringComparator);
-
-    writeAllLines(strings, nn, targetFile);
+    writeAllLines(strings, lines, targetFile);
 
     writeBuffer(originLines, size, targetFile);
 

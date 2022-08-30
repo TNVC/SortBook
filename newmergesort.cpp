@@ -12,8 +12,8 @@
 /// @param [in] elementSize Size of one element in array
 /// @param [in] comparator Function pointer to comparator
 /// @return Count of merge in this iterate
-static int mergeIteration(void *source, void *target, size_t size, size_t elementSize,
-                          int (*comparator)(const void *, const void *));            ///Rework
+static unsigned mergeIteration(void *source, void *target, size_t size, size_t elementSize,
+                          int (*comparator)(const void *, const void *));
 
 /// Merge two sub-arrays
 /// @param [in] firstSubArray First sub array for merge
@@ -32,6 +32,8 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
     assert(buffer     != nullptr);
     assert(comparator != nullptr);
 
+    assert(elementSize > 0);
+
     if (size < 2)
         return;
 
@@ -43,41 +45,21 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
     void *source = buffer,
          *target = temp;
 
+    while (mergeIteration(source, target, size, elementSize, comparator) != 0)
     {
-        void *last    = buffer + (size - 1)*elementSize,
-             *prelast = buffer + (size - 2)*elementSize;
-
-        if (size % 2 == 1 && comparator(prelast, last) > 0)
-        {
-            void *buff = calloc(1, elementSize);
-
-            memcpy(buff   , prelast, elementSize);
-            memcpy(prelast, last   , elementSize);
-            memcpy(last   , buff   , elementSize);
-
-            free(buff);
-        }
-    }
-
-    for (size_t i = 0, iter = 1; i < iterCount; ++i, iter *= 2)
-    {
-        if (iter > size / 2)
-            iter = size / 2;
-
-        mergeIteration(source, target, iter, size, elementSize, comparator);
-
         void *buff = source;
 
         source = target;
         target = buff;
     }
 
-    memcpy(buffer, temp, size*elementSize);
+    if (source != buffer)
+        memcpy(buffer, temp, size*elementSize);
 
     free(temp);
 }
 
-static void mergeIteration(void *source, void *target, size_t subSize, size_t size, size_t elementSize,
+static unsigned mergeIteration(void *source, void *target, size_t size, size_t elementSize,
                            int (*comparator)(const void *, const void *))
 {
     assert(source     != nullptr);
@@ -87,24 +69,54 @@ static void mergeIteration(void *source, void *target, size_t subSize, size_t si
     assert(elementSize > 0);
 
     void *first  = source,
-         *second = source    + ((size / subSize) / 2)*elementSize;
+         *second = source;
 
-    void *firstEnd  = source + ((size / subSize) / 2)*elementSize;
+    size_t firstSize  = 0,
+           secondSize = 0;
 
-    while (first < firstEnd)
+    void *end = source + size*elementSize;
+
+    unsigned mergeCount = 0;
+
+    while (first < end)
     {
-        size_t firstSize  = subSize,
-               secondSize = subSize + (((size % 2 == 1) && (first + subSize*elementSize == firstEnd)) ? 1 : 0);
+        first = second + secondSize*elementSize;
+
+        for (firstSize = 0; first + firstSize*elementSize < end; ++firstSize)
+        {
+            if (firstSize == 0)
+                continue;
+
+            if (comparator(first + (firstSize - 1)*elementSize, first + firstSize*elementSize) > 0)
+                break;
+        }
+
+        if (first + firstSize*elementSize == end)
+        {
+            merge(first, second, target, firstSize, 0, elementSize, comparator);
+
+            return mergeCount;
+        }
+
+        second = first + firstSize*elementSize;
+
+        for (secondSize = 0; second + secondSize*elementSize < end; ++secondSize)
+        {
+            if (secondSize == 0)
+                continue;
+
+            if (comparator(second + (secondSize - 1)*elementSize, second + secondSize*elementSize) > 0)
+                break;
+        }
 
         merge(first, second, target, firstSize, secondSize, elementSize, comparator);
 
-        first  +=  subSize*elementSize;
-        second +=  subSize*elementSize;
+        ++mergeCount;
 
-        target += 2*subSize*elementSize;
+        target += (firstSize + secondSize)*elementSize;
     }
 
-
+    return mergeCount;
 }
 
 static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray,
@@ -115,6 +127,8 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
     assert(secondSubArray != nullptr);
     assert(targetArray    != nullptr);
     assert(comparator     != nullptr);
+
+    assert(elementSize > 0);
 
     size_t i = 0, j = 0;
 
