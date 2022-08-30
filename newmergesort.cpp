@@ -4,6 +4,17 @@
 #include <stdio.h>
 #include "newmergesort.h"
 
+
+/// One merge iteration into source
+/// @param [in] source Source array
+/// @param [out] targe Target array
+/// @param [in] size Size of source array
+/// @param [in] elementSize Size of one element in array
+/// @param [in] comparator Function pointer to comparator
+/// @return Count of merge in this iterate
+static int mergeIteration(void *source, void *target, size_t size, size_t elementSize,
+                          int (*comparator)(const void *, const void *));            ///Rework
+
 /// Merge two sub-arrays
 /// @param [in] firstSubArray First sub array for merge
 /// @param [in] secondSubArray Second sub array for merge
@@ -26,32 +37,74 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
 
     void *temp = calloc(size, elementSize);
 
-    void *first  = buffer,
-         *second = buffer;
+    if (temp == nullptr)
+        return;
 
-    size_t firstSize  = 0,
-           secondSize = 0;
+    void *source = buffer,
+         *target = temp;
 
-    const void *end = buffer + size*elementSize;
-
-    while (second != nullptr)
     {
-        first = second + secondSize;
+        void *last    = buffer + (size - 1)*elementSize,
+             *prelast = buffer + (size - 2)*elementSize;
 
-        for ( ; first < end; ++firstSize)
+        if (size % 2 == 1 && comparator(prelast, last) > 0)
         {
-            if (firstSize == 0)
-                continue;
+            void *buff = calloc(1, elementSize);
 
-            if (comparator(first + (firstSize - 1)*elementSize, first + firstSize*elementSize) > 0)
-                break;
+            memcpy(buff   , prelast, elementSize);
+            memcpy(prelast, last   , elementSize);
+            memcpy(last   , buff   , elementSize);
+
+            free(buff);
         }
-
-
-
     }
 
+    for (size_t i = 0, iter = 1; i < iterCount; ++i, iter *= 2)
+    {
+        if (iter > size / 2)
+            iter = size / 2;
+
+        mergeIteration(source, target, iter, size, elementSize, comparator);
+
+        void *buff = source;
+
+        source = target;
+        target = buff;
+    }
+
+    memcpy(buffer, temp, size*elementSize);
+
     free(temp);
+}
+
+static void mergeIteration(void *source, void *target, size_t subSize, size_t size, size_t elementSize,
+                           int (*comparator)(const void *, const void *))
+{
+    assert(source     != nullptr);
+    assert(target     != nullptr);
+    assert(comparator != nullptr);
+
+    assert(elementSize > 0);
+
+    void *first  = source,
+         *second = source    + ((size / subSize) / 2)*elementSize;
+
+    void *firstEnd  = source + ((size / subSize) / 2)*elementSize;
+
+    while (first < firstEnd)
+    {
+        size_t firstSize  = subSize,
+               secondSize = subSize + (((size % 2 == 1) && (first + subSize*elementSize == firstEnd)) ? 1 : 0);
+
+        merge(first, second, target, firstSize, secondSize, elementSize, comparator);
+
+        first  +=  subSize*elementSize;
+        second +=  subSize*elementSize;
+
+        target += 2*subSize*elementSize;
+    }
+
+
 }
 
 static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray,
