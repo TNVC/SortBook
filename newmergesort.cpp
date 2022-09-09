@@ -58,7 +58,7 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
 }
 
 static unsigned mergeIteration(void *source, void *target, size_t size, size_t elementSize,
-                           int (*comparator)(const void *, const void *))
+                               int (*comparator)(const void *, const void *))
 {
     assert(source     != nullptr);
     assert(target     != nullptr);

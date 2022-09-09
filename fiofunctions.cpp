@@ -13,7 +13,7 @@
 static int isSpaceString(const String *str);
 
 /// Return file size
-/// @param [in] fileptr File
+/// @param [in] filename Name of file
 /// @return Size of file in byte
 static size_t getFileSize(const char *filename);
 
