@@ -25,24 +25,18 @@ int main(int argc, char *argv[])
     if (argc < 3)
         printf("Set target file to default: \"%s\"\n", DEFAULT_TARGET_FILE_NAME);
 
-    FILE *fileptr = nullptr;
+    char *originLines = nullptr;
 
-    fileptr = fopen(argv[1], "rb");
+    size_t size = 0;
 
-    if (fileptr == nullptr)
+    size = readAllLines(&originLines, argv[1]);
+
+    if (size == (size_t) FAIL_TO_OPEN)
     {
         printf("Fail to open \"%s\"!!\n", argv[1]);
 
         return 0;
     }
-
-    char *originLines = nullptr;
-
-    size_t size = 0;
-
-    size = readAllLines(&originLines, fileptr);
-
-    fclose(fileptr);
 
     if (size == (size_t) OUT_OF_MEM)
     {

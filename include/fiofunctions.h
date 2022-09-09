@@ -4,14 +4,15 @@
 #include <stddef.h>
 #include "line.h"
 
-static const int OUT_OF_MEM = -1;
+static const int OUT_OF_MEM   = -1;
+static const int FAIL_TO_OPEN = -2;
 
 /// Read every file line in buffer
 /// @param [out] buffer Address of pointer to buffer
-/// @param [in] fileptr File which need to read in bin mode
+/// @param [in] filename Name of file which need to read
 /// @return Size of buffer in heap
 /// @note If was error return OUT_OF_MEM
-size_t readAllLines(char **buffer, FILE *fileptr);
+size_t readAllLines(char **buffer, const char *filename);
 
 /// Write every line in file
 /// @param [in] strings String array

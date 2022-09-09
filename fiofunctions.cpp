@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include <assert.h>
 #include "line.h"
 #include "fiofunctions.h"
@@ -14,26 +15,39 @@ static int isSpaceString(const String *str);
 /// Return file size
 /// @param [in] fileptr File
 /// @return Size of file in byte
-static size_t getFileSize(FILE *fileptr);
+static size_t getFileSize(const char *filename);
 
-size_t readAllLines(char **buffer, FILE *fileptr)
+size_t readAllLines(char **buffer, const char *filename)
 {
-    assert(buffer  != nullptr);
-    assert(fileptr != nullptr);
+    assert(buffer   != nullptr);
+    assert(filename != nullptr);
 
-    size_t size = getFileSize(fileptr);
+    FILE *fileptr = fopen(filename, "rb");
+
+    if (fileptr == nullptr)
+        return (size_t) FAIL_TO_OPEN;
+
+    size_t size = getFileSize(filename);
 
     *buffer = (char *) calloc(size, sizeof(char));
 
     if (*buffer == nullptr)
+    {
+        fclose(fileptr);
+
         return (size_t) OUT_OF_MEM;
+    }
 
     if (fread(*buffer, sizeof(char), size, fileptr) != size)
     {
+        fclose(fileptr);
+
         free(*buffer);
 
         return (size_t) OUT_OF_MEM;
     }
+
+    fclose(fileptr);
 
     return size;
 }
@@ -89,15 +103,13 @@ static int isSpaceString(const String *str)
     return 1;
 }
 
-static size_t getFileSize(FILE *fileptr)
+static size_t getFileSize(const char *filename)
 {
-    assert(fileptr != nullptr);
+    assert(filename != nullptr);
 
-    fseek(fileptr, 0L, SEEK_END);
+    struct stat temp = {};
 
-    size_t size = ftell(fileptr);
+    stat(filename, &temp);
 
-    rewind(fileptr);
-
-    return size;
+    return temp.st_size;
 }
