@@ -1,13 +1,13 @@
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include "line.h"
 #include "copyfunctions.h"
+#include "asserts.h"
 
 String *getStringArray(char *buffer, size_t size, size_t *lines)
 {
-    assert(buffer != nullptr);
-    assert(lines  != nullptr);
+    pointerAssert(buffer, nullptr);
+    pointerAssert(lines,  nullptr);
 
     *lines = 0;
 

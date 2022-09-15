@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <sys/stat.h>
-#include <assert.h>
 #include "line.h"
 #include "fiofunctions.h"
-#include "stringassert.h"
+#include "asserts.h"
 
 /// Check that string has only space chars
 /// @param [in] str Source string
@@ -19,8 +18,8 @@ static size_t getFileSize(const char *filename);
 
 size_t readAllLines(char **buffer, const char *filename)
 {
-    assert(buffer   != nullptr);
-    assert(filename != nullptr);
+    pointerAssert(buffer,   nullptr);
+    pointerAssert(filename, nullptr);
 
     FILE *fileptr = fopen(filename, "rb");
 
@@ -54,13 +53,13 @@ size_t readAllLines(char **buffer, const char *filename)
 
 void writeAllLines(String strings[], size_t size, FILE *fileptr)
 {
-    assert(strings != nullptr);
-    assert(fileptr != nullptr);
+    pointerAssert(strings, nullptr);
+    pointerAssert(fileptr, nullptr);
 
     #ifndef NOT_DEBUG_MODE_
 
     for (size_t i = 0; i < size; ++i)
-        stringAssert(strings[i].buff != nullptr, i);
+        pointerIndexAssert(strings[i].buff, nullptr, i);
 
     #endif
 
@@ -71,8 +70,8 @@ void writeAllLines(String strings[], size_t size, FILE *fileptr)
 
 void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
 {
-    assert(buffer  != nullptr);
-    assert(fileptr != nullptr);
+    pointerAssert(buffer,  nullptr);
+    pointerAssert(fileptr, nullptr);
 
     for (size_t i = 0; i < n; ++i)
     {
@@ -94,7 +93,7 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
 
 static int isSpaceString(const String *str)
 {
-    assert(str != nullptr);
+    pointerAssert(str, nullptr);
 
     for (size_t i = 0; str->buff[i] != '\0'; ++i)
         if (!isspace(str->buff[i]))
@@ -105,7 +104,7 @@ static int isSpaceString(const String *str)
 
 static size_t getFileSize(const char *filename)
 {
-    assert(filename != nullptr);
+    pointerAssert(filename, nullptr);
 
     struct stat temp = {};
 

@@ -1,16 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include "heapfunctions.h"
 #include "line.h"
 #include "fiofunctions.h"
 #include "copyfunctions.h"
 #include "sortfunctions.h"
+#include "logging.h"
 
 const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "");
+
+    initLog(1, nullptr);
+
+    logMessage(LOG_MESSAGE("Program start in main()"));
 
     if (argc < 2)
     {
@@ -25,20 +31,20 @@ int main(int argc, char *argv[])
     if (argc < 3)
         printf("Set target file to default: \"%s\"\n", DEFAULT_TARGET_FILE_NAME);
 
-    char *originLines = nullptr;
+    Strings strings = {};
 
-    size_t size = 0;
+    constructor(&strings);
 
-    size = readAllLines(&originLines, argv[1]);
+    strings.size = readAllLines(&strings.originBuffer, argv[1]);
 
-    if (size == (size_t) FAIL_TO_OPEN)
+    if (strings.size == (size_t) FAIL_TO_OPEN)
     {
         printf("Fail to open \"%s\"!!\n", argv[1]);
 
         return 0;
     }
 
-    if (size == (size_t) OUT_OF_MEM)
+    if (strings.size == (size_t) OUT_OF_MEM)
     {
         printf("Line %d: Out of memory exception!!\n", __LINE__);
 
@@ -56,29 +62,30 @@ int main(int argc, char *argv[])
     {
         printf("Fail to open \"%s\"!!\n", argc >= 3 ? argv[2] : DEFAULT_TARGET_FILE_NAME);
 
-        free(originLines);
+        destructor(&strings);
 
         return 0;
     }
 
-    size_t lines = 0;
+    strings.sequence = getStringArray(strings.originBuffer, strings.size, &strings.stringCount);
 
-    String *strings = getStringArray(originLines, size, &lines);
+    sortStringArray(strings.sequence, strings.stringCount, stringComparator);
 
-    sortStringArray(strings, lines, stringComparator);
+    writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
-    writeAllLines(strings, lines, targetFile);
+    sortStringArray(strings.sequence, strings.stringCount, reverseStringComparator);
 
-    sortStringArray(strings, lines, reverseStringComparator);
+    writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
-    writeAllLines(strings, lines, targetFile);
-
-    writeBuffer(originLines, size, targetFile);
+    writeBuffer(strings.originBuffer, strings.size, targetFile);
 
     fclose(targetFile);
 
-    free(originLines);
-    free(strings);
+    destructor(&strings);
+
+    logMessage(LOG_MESSAGE("Program end in main()"));
+
+    destroyLog();
 
     return 0;
 }

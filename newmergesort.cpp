@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include "newmergesort.h"
+#include "asserts.h"
 
 /// One merge iteration into source
 /// @param [in] source Source array
@@ -27,10 +27,9 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
 
 void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparator)(const void *, const void *))
 {
-    assert(buffer     != nullptr);
-    assert(comparator != nullptr);
-
-    assert(elementSize > 0);
+    pointerAssert (buffer,      nullptr);
+    functionAssert(comparator,  nullptr);
+    decimalAssert (elementSize, 0);
 
     if (size < 2)
         return;
@@ -60,11 +59,10 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
 static unsigned mergeIteration(void *source, void *target, size_t size, size_t elementSize,
                                int (*comparator)(const void *, const void *))
 {
-    assert(source     != nullptr);
-    assert(target     != nullptr);
-    assert(comparator != nullptr);
-
-    assert(elementSize > 0);
+    pointerAssert (source,      nullptr);
+    pointerAssert (target,      nullptr);
+    functionAssert(comparator,  nullptr);
+    decimalAssert (elementSize, 0);
 
     void *first  = source,
          *second = source;
@@ -123,12 +121,11 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
                   size_t firstSize    , size_t secondSize    , size_t elementSize,
                   int (*comparator)(const void *, const void *))
 {
-    assert(firstSubArray  != nullptr);
-    assert(secondSubArray != nullptr);
-    assert(targetArray    != nullptr);
-    assert(comparator     != nullptr);
-
-    assert(elementSize > 0);
+    pointerAssert(firstSubArray,  nullptr);
+    pointerAssert(secondSubArray, nullptr);
+    pointerAssert(targetArray,    nullptr);
+    functionAssert(comparator,    nullptr);
+    decimalAssert(elementSize,    0);
 
     size_t i = 0, j = 0;
 
