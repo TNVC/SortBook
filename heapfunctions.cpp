@@ -6,6 +6,8 @@ void constructor(Strings *strings)
 {
     pointerAssert(strings, nullptr);
 
+    LOG_LINE;
+
     strings->originBuffer = nullptr;
     strings->size         = 0;
     strings->sequence     = nullptr;
@@ -18,6 +20,8 @@ void destructor(Strings *strings)
 
     strings->size        = 0;
     strings->stringCount = 0;
+
+    LOG_LINE;
 
     if (strings->originBuffer != nullptr)
         free(strings->originBuffer);

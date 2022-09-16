@@ -9,6 +9,8 @@ String *getStringArray(char *buffer, size_t size, size_t *lines)
     pointerAssert(buffer, nullptr);
     pointerAssert(lines,  nullptr);
 
+    LOG_LINE;
+
     *lines = 0;
 
     char *lastFindChar = buffer;

@@ -10,7 +10,7 @@
 #define indexAssert(expression, i)                                                    \
     if (!(expression))                                                                \
     {                                                                                 \
-        logError(ERROR_ARRAY_INFO(expression, i));                                    \
+        LOG_ERROR_INDEX(expression, i);                                               \
                                                                                       \
         abort();                                                                      \
     }
@@ -20,7 +20,7 @@
     {                                                                                 \
         indexAssert((array)[i] != badValue, i)                                        \
                                                                                       \
-        logPointer(LOG_ARRAY_INFO((array)[i], i));                                    \
+        LOG_POINTER_INDEX((array)[i], i);                                             \
     }
 
 #define arrayDecimalAssert(array, badValue, size)                                     \
@@ -28,71 +28,71 @@
     {                                                                                 \
         indexAssert((array)[i] != badValue, i)                                        \
                                                                                       \
-        logDecimal(LOG_ARRAY_INFO((array)[i], i));                                    \
+        LOG_DECIMAL_INDEX((array)[i], i);                                             \
     }
 
 #define pointerAssert(pointerValue, badPointerValue)                                  \
     {                                                                                 \
         assert(pointerValue != badPointerValue);                                      \
                                                                                       \
-        logPointer(LOG_INFO(pointerValue));                                           \
+        LOG_POINTER(pointerValue);                                                    \
     }
 
 #define functionAssert(functionValue, badFunctionValue)                               \
     {                                                                                 \
         assert(functionValue != badFunctionValue);                                    \
                                                                                       \
-        logPointer(LOG_FUNCTION_INFO(functionValue));                                 \
+        LOG_POINTER(functionValue);                                                   \
     }
 
 #define decimalAssert(decimalValue, badDecimalValue)                                  \
     {                                                                                 \
         assert(decimalValue != badDecimalValue);                                      \
                                                                                       \
-        logDecimal(LOG_INFO(decimalValue));                                           \
+        LOG_DECIMAL(decimalValue);                                                    \
     }
 
 #define pointerIndexAssert(pointerValue, badPointerValue, i)                          \
     {                                                                                 \
         indexAssert(pointerValue != badPointerValue, i);                              \
                                                                                       \
-        logPointer(LOG_ARRAY_INFO(pointerValue, i));                                  \
+        LOG_POINTER_INDEX(pointerValue, i);                                           \
     }
 
 #define decimaIndexlAssert(decimalValue, badDecimalValue, i)                          \
     {                                                                                 \
         indexAssert(decimalValue != badDecimalValue, i);                              \
                                                                                       \
-        logDecimal(LOG_ARRA_INFO(decimalValue));                                      \
+        LOG_DECIMAL_INDEX(decimalValue, i);                                           \
     }
 
-#define assert(expression)                                                          \
-    if (!(expression))                                                              \
-    {                                                                               \
-        logError(ERROR_INFO(expression));                                           \
-                                                                                    \
-        abort();                                                                    \
+#define assert(expression)                                                            \
+    if (!(expression))                                                                \
+    {                                                                                 \
+        LOG_ERROR(expression);                                                        \
+                                                                                      \
+        abort();                                                                      \
     }
 
 #else
 
-#define arrayAssert(expression, i) ;
+#define arrayAssert(expression, i)                           ;
 
-#define arrayPointerAssert(array, badValue, size) ;
+#define arrayPointerAssert(array, badValue, size)            ;
 
-#define arrayDecimalAssert(array, badValue, size) ;
+#define arrayDecimalAssert(array, badValue, size)            ;
 
-#define pointerAssert(pointerValue, badPointerValue) ;
+#define pointerAssert(pointerValue, badPointerValue)         ;
 
-#define functionAssert(functionValue, badFunctionValue) ;
+#define functionAssert(functionValue, badFunctionValue)      ;
 
-#define decimalAssert(decimalValue, badDecimalValue) ;
+#define decimalAssert(decimalValue, badDecimalValue)         ;
 
 #define pointerIndexAssert(pointerValue, badPointerValue, i) ;
 
 #define decimaIndexlAssert(decimalValue, badDecimalValue, i) ;
 
-#define assert(expression) ;
+#define assert(expression)                                   ;
 
 #endif
 

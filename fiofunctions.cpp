@@ -23,8 +23,12 @@ size_t readAllLines(char **buffer, const char *filename)
 
     FILE *fileptr = fopen(filename, "rb");
 
+    LOG_LINE;
+
     if (fileptr == nullptr)
         return (size_t) FAIL_TO_OPEN;
+
+    LOG_LINE;
 
     size_t size = getFileSize(filename);
 
@@ -37,6 +41,8 @@ size_t readAllLines(char **buffer, const char *filename)
         return (size_t) OUT_OF_MEM;
     }
 
+    LOG_LINE;
+
     if (fread(*buffer, sizeof(char), size, fileptr) != size)
     {
         fclose(fileptr);
@@ -45,6 +51,8 @@ size_t readAllLines(char **buffer, const char *filename)
 
         return (size_t) OUT_OF_MEM;
     }
+
+    LOG_LINE;
 
     fclose(fileptr);
 
@@ -63,6 +71,8 @@ void writeAllLines(String strings[], size_t size, FILE *fileptr)
 
     #endif
 
+    LOG_LINE;
+
     for (size_t i = 0; i < size; ++i)
         if (!isSpaceString(&strings[i]))
             fprintf(fileptr, "%s\n", strings[i].buff);
@@ -73,11 +83,14 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
     pointerAssert(buffer,  nullptr);
     pointerAssert(fileptr, nullptr);
 
+    LOG_LINE;
+
     for (size_t i = 0; i < n; ++i)
     {
+        LOG_LINE;
+
         if (buffer[i] == '\0')
         {
-
             #if defined OS_WINDOWS_
 
             ++i;
@@ -95,6 +108,8 @@ static int isSpaceString(const String *str)
 {
     pointerAssert(str, nullptr);
 
+    LOG_LINE;
+
     for (size_t i = 0; str->buff[i] != '\0'; ++i)
         if (!isspace(str->buff[i]))
             return 0;
@@ -105,6 +120,8 @@ static int isSpaceString(const String *str)
 static size_t getFileSize(const char *filename)
 {
     pointerAssert(filename, nullptr);
+
+    LOG_LINE;
 
     struct stat temp = {};
 

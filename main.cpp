@@ -6,6 +6,7 @@
 #include "fiofunctions.h"
 #include "copyfunctions.h"
 #include "sortfunctions.h"
+#include "newmergesort.h"
 #include "logging.h"
 
 const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
@@ -13,10 +14,6 @@ const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "");
-
-    initLog(1, nullptr);
-
-    logMessage(LOG_MESSAGE("Program start in main()"));
 
     if (argc < 2)
     {
@@ -69,11 +66,11 @@ int main(int argc, char *argv[])
 
     strings.sequence = getStringArray(strings.originBuffer, strings.size, &strings.stringCount);
 
-    sortStringArray(strings.sequence, strings.stringCount, stringComparator);
+    qsort          (strings.sequence, strings.stringCount, sizeof(String), stringComparator);
 
     writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
-    sortStringArray(strings.sequence, strings.stringCount, reverseStringComparator);
+    newMergeSort   (strings.sequence, strings.stringCount, sizeof(String), reverseStringComparator);
 
     writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
@@ -82,10 +79,6 @@ int main(int argc, char *argv[])
     fclose(targetFile);
 
     destructor(&strings);
-
-    logMessage(LOG_MESSAGE("Program end in main()"));
-
-    destroyLog();
 
     return 0;
 }

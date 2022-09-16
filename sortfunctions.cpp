@@ -11,27 +11,12 @@
 /// @return 0 if first == second, negative value if first < second, positive value if first > second
 static int charComparator(char first, char second);
 
-String *sortStringArray(String strings[], size_t n, int (*funcptr)(const void *first, const void *second))
-{
-    pointerAssert (strings, nullptr);
-    functionAssert(funcptr, nullptr);
-
-    #ifndef NOT_DEBUG_MODE_
-
-    for (size_t i = 0; i < n; ++i)
-        pointerIndexAssert(strings[i].buff, nullptr, i);
-
-    #endif
-
-    newMergeSort(strings, n, sizeof(String), funcptr);
-
-    return strings;
-}
-
 int stringComparator(const void *first, const void *second)
 {
     pointerAssert(first,  nullptr);
     pointerAssert(second, nullptr);
+
+    LOG_LINE;
 
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
@@ -49,6 +34,8 @@ int stringComparator(const void *first, const void *second)
         if (fstring->buff[i] == '\0' || sstring->buff[j] == '\0')
             continue;
 
+        LOG_LINE;
+
         int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 
         if (compRes != 0)
@@ -64,6 +51,8 @@ int reverseStringComparator(const void *first, const void *second)
 {
     pointerAssert(first,  nullptr);
     pointerAssert(second, nullptr);
+
+    LOG_LINE;
 
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
@@ -81,6 +70,8 @@ int reverseStringComparator(const void *first, const void *second)
 
         if (i == 0 || j == 0)
             break;
+
+        LOG_LINE;
 
         int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 

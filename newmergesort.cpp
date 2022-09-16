@@ -5,7 +5,7 @@
 
 /// One merge iteration into source
 /// @param [in] source Source array
-/// @param [out] targe Target array
+/// @param [out] target Target array
 /// @param [in] size Size of source array
 /// @param [in] elementSize Size of one element in array
 /// @param [in] comparator Function pointer to comparator
@@ -31,6 +31,8 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
     functionAssert(comparator,  nullptr);
     decimalAssert (elementSize, 0);
 
+    LOG_LINE;
+
     if (size < 2)
         return;
 
@@ -42,6 +44,8 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
     void *source = buffer,
          *target = temp;
 
+    LOG_LINE;
+
     while (mergeIteration(source, target, size, elementSize, comparator) != 0)
     {
         void *buff = source;
@@ -49,6 +53,8 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
         source = target;
         target = buff;
     }
+
+    LOG_LINE;
 
     if (source != buffer)
         memcpy(buffer, temp, size*elementSize);
@@ -74,6 +80,8 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
 
     unsigned mergeCount = 0;
 
+    LOG_LINE;
+
     while (first < end)
     {
         first = second + secondSize*elementSize;
@@ -94,6 +102,8 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
 
             return mergeCount;
         }
+
+        LOG_LINE;
 
         second = first + firstSize*elementSize;
 
@@ -127,6 +137,8 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
     functionAssert(comparator,    nullptr);
     decimalAssert(elementSize,    0);
 
+    LOG_LINE;
+
     size_t i = 0, j = 0;
 
     size_t currentIndex = 0;
@@ -143,6 +155,8 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
             temp = (firstSubArray  + (i++)*elementSize);
         else
             temp = (secondSubArray + (j++)*elementSize);
+
+        LOG_LINE;
 
         memcpy((targetArray + (currentIndex++)*elementSize), temp, elementSize);
     }

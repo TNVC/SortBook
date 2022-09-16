@@ -3,8 +3,8 @@ FLAGS=-Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal 
 SOURCE=main.cpp fiofunctions.cpp copyfunctions.cpp sortfunctions.cpp newmergesort.cpp heapfunctions.cpp logging.cpp
 OBJECTS=${SOURCE:.cpp=.o}
 INCLUDE=include
-OS=OS_WINDOWS_
-LOG_LEVEL=-DLOG_LEVEL_ERROR -DLOG_LEVEL_MESSAGE #-DLOG_LEVEL_VALUE
+OS=-DOS_WINDOWS_
+LOG_LEVEL= -DLOG_LEVEL_ERROR -DLOG_LEVEL_VALUE -DLOG_LEVEL_MESSAGE 
 
 all: sortbook
 
@@ -12,22 +12,22 @@ sortbook: ${OBJECTS}
 	@${CC} ${OBJECTS}
 
 main.o: main.cpp ${INCLUDE}/fiofunctions.h ${INCLUDE}/logging.h
-	@${CC} -c -I ${INCLUDE} ${FLAGS} ${LOG_LEVEL} main.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} main.cpp
 
 fiofunctions.o: fiofunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} -D ${OS} ${LOG_LEVEL} fiofunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} ${OS} fiofunctions.cpp
 
 copyfunctions.o: copyfunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} -D ${OS} ${LOG_LEVEL} copyfunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} ${OS} copyfunctions.cpp
 
 sortfunctions.o: sortfunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} ${LOG_LEVEL} sortfunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} sortfunctions.cpp
 
 newmergesort.o: newmergesort.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} ${LOG_LEVEL} newmergesort.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} newmergesort.cpp
 
 heapfunctions.o: heapfunctions.cpp
-	@${CC} -c -I ${INCLUDE} ${FLAGS} ${LOG_LEVEL} heapfunctions.cpp
+	@${CC} -c -I ${INCLUDE} ${FLAGS} heapfunctions.cpp
 	
 logging.o: logging.cpp
 	@${CC} -c -I ${INCLUDE} ${FLAGS} ${LOG_LEVEL} logging.cpp
