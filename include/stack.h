@@ -42,7 +42,7 @@ int stack_push(Stack *stk, const void *element, size_t elementSize,
 /// @param [in/out] stk Stack
 /// @param [out] element Container for pop-element
 /// @param [in] copyFunction Function for copy element
-/// @return 1 if was pop element or 0 if wasn`t pop element
+/// @return 1 if was pop element or 0 if was not
 int stack_pop(Stack *stk, void *element, void (*copyFunction)(void *target, const void *source));
 
 /// Size of Stack

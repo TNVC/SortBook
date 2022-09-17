@@ -116,9 +116,9 @@ static int charComparator(char first, char second)
         second = (second == '¨') ? 'Å' : second;
     }
     else if (first  == '¨' && nearSecond)
-        RETURN((second == 'Å') ?  1 : -1)/// It`s scary
+        RETURN((second == 'Å') ?  1 : -1);
     else if (second == '¨' && nearFirst)
-        RETURN((first  == 'Å') ? -1 :  1)/// It`s scary
+        RETURN((first  == 'Å') ? -1 :  1);
 
     RETURN(first - second);
 }

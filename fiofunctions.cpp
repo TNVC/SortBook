@@ -79,7 +79,7 @@ void writeAllLines(String strings[], size_t size, FILE *fileptr)
 
     for (size_t i = 0; i < size; ++i)
         if (!isSpaceString(&strings[i]))
-            fprintf(fileptr, "%s\n", strings[i].buff);
+            fputs(strings[i].buff, fileptr);
 
     RETURN_;
 }
@@ -93,22 +93,13 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
 
     LOG_LINE;
 
-    for (size_t i = 0; i < n; ++i)
+    while (n > 0)
     {
-        LOG_LINE;
+        size_t printChars = fprintf(fileptr, "%s", buffer);
 
-        if (buffer[i] == '\0')
-        {
-            #if defined OS_WINDOWS_
+        n -= printChars + 1;
 
-            ++i;
-
-            #endif
-
-            putc('\n', fileptr);
-        }
-        else
-            putc(buffer[i], fileptr);
+        buffer += printChars + 1;
     }
 
     RETURN_;

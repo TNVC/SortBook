@@ -34,12 +34,6 @@ String *getStringArray(char *buffer, size_t size, size_t *lines)
         strings[currentLine++].size = lineSize;
 
         lineSize = 0;
-
-        #if defined OS_WINDOWS_
-
-        ++i;
-
-        #endif
     }
 
     RETURN(strings);
@@ -61,7 +55,7 @@ static size_t splitBuff(char *buffer, size_t size)
 
         #if defined OS_WINDOWS_
 
-        *(lastFindChar - 1) = '\0';
+        *(lastFindChar - 1) = '\n';
 
         #endif
 

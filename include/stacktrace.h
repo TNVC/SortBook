@@ -9,27 +9,30 @@
 #if not defined NOT_DEBUG_MODE_
 
 #define RETURN(value)                                                                       \
+    do                                                                                      \
     {                                                                                       \
         FUNC_END;                                                                           \
                                                                                             \
         return value;                                                                       \
-    }
+    } while(0)
 
 #define RETURN_ FUNC_END;
 
 #define FUNC_START                                                                          \
+    do                                                                                      \
     {                                                                                       \
         StackTraceElement stackTraceTemp = {INFO_FOR_STACKTRACE};                           \
                                                                                             \
         stack_push(&StackTrace, &stackTraceTemp, sizeof(StackTraceElement), copyElement);   \
-    }
+    } while(0)
 
 #define FUNC_END                                                                            \
+    do                                                                                      \
     {                                                                                       \
         StackTraceElement stackTraceTemp = {};                                              \
                                                                                             \
         stack_pop(&StackTrace, &stackTraceTemp, copyElement);                               \
-    }
+    } while(0)
 
 #define PRINT_STACK_TRACE stackTracePrint(&StackTrace, LogFile)
 

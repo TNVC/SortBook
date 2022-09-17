@@ -72,7 +72,7 @@ int main(const int argc, const char *argv[])
 
     qsort          (strings.sequence, strings.stringCount, sizeof(String), stringComparator);
 
-    writeAllLines  (strings.sequence, strings.stringCount, targetFile);\
+    writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
     newMergeSort   (strings.sequence, strings.stringCount, sizeof(String), reverseStringComparator);
 
