@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "stacktrace.h"
 #include "stack.h"
-#include "asserts.h"
 
 Stack StackTrace = {};
 
@@ -27,8 +27,8 @@ void destroyStackTrace()
 
 void stackTracePrint(const Stack *stk, FILE *filePtr)
 {
-    pointerAssert(stk    , nullptr);
-    pointerAssert(filePtr, nullptr);
+    assert(stk     != nullptr);
+    assert(filePtr != nullptr);
 
     size_t i = stk->size;
 
@@ -47,8 +47,8 @@ void stackTracePrint(const Stack *stk, FILE *filePtr)
 
 void copyElement(void *target, const void *source)
 {
-    pointerAssert(target, nullptr);
-    pointerAssert(source, nullptr);
+    assert(target != nullptr);
+    assert(source != nullptr);
 
     memcpy(target, source, sizeof(StackTraceElement));
 }

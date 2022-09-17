@@ -18,6 +18,8 @@ static int isSpaceString(const String *str);
 
 size_t readFile(char **buffer, const char *filename)
 {
+    FUNC_START;
+
     pointerAssert(buffer,   nullptr);
     pointerAssert(filename, nullptr);
 
@@ -26,7 +28,7 @@ size_t readFile(char **buffer, const char *filename)
     LOG_LINE;
 
     if (fileptr == nullptr)
-        return (size_t) FAIL_TO_OPEN;
+        RETURN((size_t) FAIL_TO_OPEN);
 
     LOG_LINE;
 
@@ -38,7 +40,7 @@ size_t readFile(char **buffer, const char *filename)
     {
         fclose(fileptr);
 
-        return (size_t) OUT_OF_MEM;
+        RETURN((size_t) OUT_OF_MEM);
     }
 
     LOG_LINE;
@@ -49,18 +51,20 @@ size_t readFile(char **buffer, const char *filename)
 
         free(*buffer);
 
-        return (size_t) OUT_OF_MEM;
+        RETURN((size_t) OUT_OF_MEM);
     }
 
     LOG_LINE;
 
     fclose(fileptr);
 
-    return size;
+    RETURN(size);
 }
 
 void writeAllLines(String strings[], size_t size, FILE *fileptr)
 {
+    FUNC_START;
+
     pointerAssert(strings, nullptr);
     pointerAssert(fileptr, nullptr);
 
@@ -76,10 +80,14 @@ void writeAllLines(String strings[], size_t size, FILE *fileptr)
     for (size_t i = 0; i < size; ++i)
         if (!isSpaceString(&strings[i]))
             fprintf(fileptr, "%s\n", strings[i].buff);
+
+    RETURN_;
 }
 
 void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
 {
+    FUNC_START;
+
     pointerAssert(buffer,  nullptr);
     pointerAssert(fileptr, nullptr);
 
@@ -102,10 +110,14 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
         else
             putc(buffer[i], fileptr);
     }
+
+    RETURN_;
 }
 
 static size_t getFileSize(const char *filename)
 {
+    FUNC_START;
+
     pointerAssert(filename, nullptr);
 
     LOG_LINE;
@@ -114,19 +126,21 @@ static size_t getFileSize(const char *filename)
 
     stat(filename, &temp);
 
-    return temp.st_size;
+    RETURN(temp.st_size);
 }
 
 static int isSpaceString(const String *str)
 {
+    FUNC_START;
+
     pointerAssert(str, nullptr);
 
     LOG_LINE;
 
     for (size_t i = 0; str->buff[i] != '\0'; ++i)
         if (!isspace(str->buff[i]))
-            return 0;
+            RETURN(0);
 
-    return 1;
+    RETURN(1);
 }
 

@@ -8,7 +8,7 @@
 /// Logging to logFile
 
 #ifndef LOG_FILE_NAME
-#define LOG_FILE_NAME "logFileTemp.txt"
+#define LOG_FILE_NAME "logFile.txt"
 #endif
 
 #ifndef LOGGING_H_

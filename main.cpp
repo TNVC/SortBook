@@ -9,17 +9,21 @@
 #include "newmergesort.h"
 #include "logging.h"
 
-const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
+#ifndef DEFAULT_TARGET_FILE_NAME
+#define DEFAULT_TARGET_FILE_NAME "sortbook.txt"
+#endif
 
 int main(const int argc, const char *argv[])
 {
+    FUNC_START;
+
     setlocale(LC_ALL, "");
 
     if (argc < 2)
     {
         printf("Incorrect use!!\n%s [source file name] [target file name]\n", argv[0]);
 
-        return 0;
+        RETURN(0);
     }
 
     if (argc < 3 || argc > 3)
@@ -38,14 +42,14 @@ int main(const int argc, const char *argv[])
     {
         printf("Fail to open \"%s\"!!\n", argv[1]);
 
-        return 0;
+        RETURN(0);
     }
 
     if (strings.size == (size_t) OUT_OF_MEM)
     {
         printf("Line %d: Out of memory exception!!\n", __LINE__);
 
-        return 0;
+        RETURN(0);
     }
 
     FILE *targetFile = nullptr;
@@ -61,14 +65,14 @@ int main(const int argc, const char *argv[])
 
         destructor(&strings);
 
-        return 0;
+        RETURN(0);
     }
 
     strings.sequence = getStringArray(strings.originBuffer, strings.size, &strings.stringCount);
 
     qsort          (strings.sequence, strings.stringCount, sizeof(String), stringComparator);
 
-    writeAllLines  (strings.sequence, strings.stringCount, targetFile);
+    writeAllLines  (strings.sequence, strings.stringCount, targetFile);\
 
     newMergeSort   (strings.sequence, strings.stringCount, sizeof(String), reverseStringComparator);
 
@@ -80,5 +84,5 @@ int main(const int argc, const char *argv[])
 
     destructor(&strings);
 
-    return 0;
+    RETURN(0);
 }

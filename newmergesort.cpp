@@ -29,6 +29,8 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
 
 void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparator)(const void *, const void *))
 {
+    FUNC_START;
+
     pointerAssert (buffer,      nullptr);
     pointerAssert (comparator,  nullptr);
     decimalAssert (elementSize, 0);
@@ -41,7 +43,7 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
     void *temp = calloc(size, elementSize);
 
     if (temp == nullptr)
-        return;
+        RETURN_;
 
     void *source = buffer,
          *target = temp;
@@ -62,11 +64,15 @@ void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparato
         memcpy(buffer, temp, size*elementSize);
 
     free(temp);
+
+    RETURN_;
 }
 
 static unsigned mergeIteration(void *source, void *target, size_t size, size_t elementSize,
                                int (*comparator)(const void *, const void *))
 {
+    FUNC_START;
+
     pointerAssert (source,      nullptr);
     pointerAssert (target,      nullptr);
     pointerAssert (comparator,  nullptr);
@@ -102,7 +108,7 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
         {
             merge(first, second, target, firstSize, 0, elementSize, comparator);
 
-            return mergeCount;
+            RETURN(mergeCount);
         }
 
         LOG_LINE;
@@ -126,13 +132,15 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
         target = (char *)target + (firstSize + secondSize)*elementSize;
     }
 
-    return mergeCount;
+    RETURN(mergeCount);
 }
 
 static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray,
                   size_t firstSize    , size_t secondSize    , size_t elementSize,
                   int (*comparator)(const void *, const void *))
 {
+    FUNC_START;
+
     pointerAssert(firstSubArray,  nullptr);
     pointerAssert(secondSubArray, nullptr);
     pointerAssert(targetArray,    nullptr);
@@ -162,4 +170,6 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
 
         memcpy(((char *)targetArray + (currentIndex++)*elementSize), temp, elementSize);
     }
+
+    RETURN_;
 }

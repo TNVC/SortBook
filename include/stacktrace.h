@@ -3,11 +3,19 @@
 
 #include <stdio.h>
 #include "stack.h"
-#include "logging.h"
 
 #define INFO_FOR_STACKTRACE __PRETTY_FUNCTION__, __FILE__, __LINE__
 
 #if not defined NOT_DEBUG_MODE_
+
+#define RETURN(value)                                                                       \
+    {                                                                                       \
+        FUNC_END;                                                                           \
+                                                                                            \
+        return value;                                                                       \
+    }
+
+#define RETURN_ FUNC_END;
 
 #define FUNC_START                                                                          \
     {                                                                                       \
@@ -27,6 +35,8 @@
 
 #else
 
+#define RETURN(value) return value
+#define RETURN_       return
 #define FUNC_START        ;
 #define FUNC_END          ;
 #define PRINT_STACK_TRACE ;

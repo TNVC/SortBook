@@ -4,6 +4,8 @@
 
 void constructor(Strings *strings)
 {
+    FUNC_START;
+
     pointerAssert(strings, nullptr);
 
     LOG_LINE;
@@ -12,10 +14,14 @@ void constructor(Strings *strings)
     strings->size         = 0;
     strings->sequence     = nullptr;
     strings->stringCount  = 0;
+
+    RETURN_;
 }
 
 void destructor(Strings *strings)
 {
+    FUNC_START;
+
     pointerAssert(strings, nullptr);
 
     strings->size        = 0;
@@ -23,8 +29,8 @@ void destructor(Strings *strings)
 
     LOG_LINE;
 
-    if (strings->originBuffer != nullptr)
-        free(strings->originBuffer);
-    if (strings->sequence     != nullptr)
-        free(strings->sequence);
+    free(strings->originBuffer);
+    free(strings->sequence);
+
+    RETURN_;
 }

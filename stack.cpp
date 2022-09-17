@@ -1,10 +1,10 @@
 #include <string.h>
-#include <asserts.h>
+#include <assert.h>
 #include "stack.h"
 
 void initStack(Stack *stk)
 {
-    pointerAssert(stk, nullptr);
+    assert(stk != nullptr);
 
     stk->head = stk->tail = nullptr;
     stk->size = 0;
@@ -12,7 +12,7 @@ void initStack(Stack *stk)
 
 void destroyStack(Stack *stk)
 {
-    pointerAssert(stk, nullptr);
+    assert(stk != nullptr);
 
     Node *temp = nullptr;
 
@@ -35,8 +35,8 @@ void destroyStack(Stack *stk)
 int stack_push(Stack *stk, const void *element, size_t elementSize,
                void (*copyFunction)(void *target, const void *source))
 {
-    pointerAssert(stk    , nullptr);
-    pointerAssert(element, nullptr);
+    assert(stk     != nullptr);
+    assert(element != nullptr);
 
     if (stk->tail == nullptr)
     {
@@ -103,8 +103,8 @@ int stack_push(Stack *stk, const void *element, size_t elementSize,
 
 int stack_pop(Stack *stk, void *element, void (*copyFunction)(void *target, const void *source))
 {
-    pointerAssert(stk    , nullptr);
-    pointerAssert(element, nullptr);
+    assert(stk     != nullptr);
+    assert(element != nullptr);
 
     if (stk->size == 0)
         return 0;
@@ -131,14 +131,14 @@ int stack_pop(Stack *stk, void *element, void (*copyFunction)(void *target, cons
 
 size_t stack_size(const Stack *stk)
 {
-    pointerAssert(stk, nullptr);
+    assert(stk != nullptr);
 
     return stk->size;
 }
 
 int stack_isEmpty(const Stack *stk)
 {
-    pointerAssert(stk, nullptr);
+    assert(stk != nullptr);
 
     return stk->size == 0;
 }

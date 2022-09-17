@@ -4,7 +4,7 @@ SOURCE=main.cpp fiofunctions.cpp copyfunctions.cpp sortfunctions.cpp newmergesor
 OBJECTS=${SOURCE:.cpp=.o}
 INCLUDE=include
 OS=-DOS_WINDOWS_
-LOG_LEVEL= #-DLOG_LEVEL_ERROR -DLOG_LEVEL_VALUE #-DLOG_LEVEL_MESSAGE 
+LOG_LEVEL= -DLOG_LEVEL_ERROR -DLOG_LEVEL_VALUE #-DLOG_LEVEL_MESSAGE 
 
 all: sortbook
 

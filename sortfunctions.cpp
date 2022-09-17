@@ -9,10 +9,22 @@
 /// @param [in] first First char
 /// @param [in] second Second char
 /// @return 0 if first == second, negative value if first < second, positive value if first > second
-static inline int charComparator(char first, char second);
+static int charComparator(char first, char second);
+
+/// Increase size_t while buff[*index] != alpha
+/// @param [in] buff Char buffer
+/// @param [in/out] index Index of char in buff
+static void skipNotAlpha(const char *buff, size_t *index);
+
+/// Decrease size_t while buff[*index] != alpha
+/// @param [in] buff Char buffer
+/// @param [in/out] index Index of char in buff
+static void reverseSkipNotAlpha(const char *buff, size_t *index);
 
 int stringComparator(const void *first, const void *second)
 {
+    FUNC_START;
+
     pointerAssert(first,  nullptr);
     pointerAssert(second, nullptr);
 
@@ -28,11 +40,9 @@ int stringComparator(const void *first, const void *second)
 
     while (fstring->buff[i] && sstring->buff[j])
     {
-        while (!isalpha((unsigned char)fstring->buff[i]) && fstring->buff[i] != '\0')
-            ++i;
+        skipNotAlpha(fstring->buff, &i);
 
-        while (!isalpha((unsigned char)sstring->buff[j]) && sstring->buff[j] != '\0')
-            ++j;
+        skipNotAlpha(sstring->buff, &j);
 
         if (fstring->buff[i] == '\0' || sstring->buff[j] == '\0')
             continue;
@@ -42,16 +52,18 @@ int stringComparator(const void *first, const void *second)
         int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 
         if (compRes != 0)
-            return compRes;
+            RETURN(compRes);
 
         ++i, ++j;
     }
 
-    return charComparator(fstring->buff[i], sstring->buff[j]);
+    RETURN(charComparator(fstring->buff[i], sstring->buff[j]));
 }
 
 int reverseStringComparator(const void *first, const void *second)
 {
+    FUNC_START;
+
     pointerAssert(first,  nullptr);
     pointerAssert(second, nullptr);
 
@@ -68,11 +80,9 @@ int reverseStringComparator(const void *first, const void *second)
 
     while (i > 0 && j > 0)
     {
-        while (!isalpha((unsigned char)fstring->buff[i]) && i > 0)
-            --i;
+        reverseSkipNotAlpha(fstring->buff, &i);
 
-        while (!isalpha((unsigned char)sstring->buff[j]) && j > 0)
-            --j;
+        reverseSkipNotAlpha(sstring->buff, &j);
 
         if (i == 0 || j == 0)
             break;
@@ -82,16 +92,18 @@ int reverseStringComparator(const void *first, const void *second)
         int compRes = charComparator(fstring->buff[i], sstring->buff[j]);
 
         if (compRes != 0)
-            return compRes;
+            RETURN(compRes);
 
         --i, --j;
     }
 
-    return charComparator(fstring->buff[i], sstring->buff[j]);
+    RETURN(charComparator(fstring->buff[i], sstring->buff[j]));
 }
 
-static inline int charComparator(char first, char second)
+static int charComparator(char first, char second)
 {
+    FUNC_START;
+
     first  = (char) toupper(first );
     second = (char) toupper(second);
 
@@ -104,9 +116,29 @@ static inline int charComparator(char first, char second)
         second = (second == '¨') ? 'Å' : second;
     }
     else if (first  == '¨' && nearSecond)
-        return (second == 'Å') ?  1 : -1;
+        RETURN((second == 'Å') ?  1 : -1)/// It`s scary
     else if (second == '¨' && nearFirst)
-        return (first  == 'Å') ? -1 :  1;
+        RETURN((first  == 'Å') ? -1 :  1)/// It`s scary
 
-    return first - second;
+    RETURN(first - second);
+}
+
+static void skipNotAlpha(const char *buff, size_t *index)
+{
+    FUNC_START;
+
+    while (!isalpha((unsigned char)buff[*index]) && buff[*index] != '\0')
+            ++(*index);
+
+    RETURN_;
+}
+
+static void reverseSkipNotAlpha(const char *buff, size_t *index)
+{
+    FUNC_START;
+
+    while (!isalpha((unsigned char)buff[*index]) && *index > 0)
+            --(*index);
+
+    RETURN_;
 }
