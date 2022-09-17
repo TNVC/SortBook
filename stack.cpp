@@ -2,8 +2,6 @@
 #include <asserts.h>
 #include "stack.h"
 
-static void copyElement(StackElement *target, const StackElement *source);
-
 void initStack(Stack *stk)
 {
     pointerAssert(stk, nullptr);
@@ -22,15 +20,20 @@ void destroyStack(Stack *stk)
     {
         temp = stk->tail->previous;
 
+        free(stk->tail->element);
+
         free(stk->tail);
 
         stk->tail = temp;
     }
 
+    stk->head = nullptr;
+
     stk->size = 0;
 }
 
-int stack_push(Stack *stk, const StackElement *element)
+int stack_push(Stack *stk, const void *element, size_t elementSize,
+               void (*copyFunction)(void *target, const void *source))
 {
     pointerAssert(stk    , nullptr);
     pointerAssert(element, nullptr);
@@ -44,7 +47,20 @@ int stack_push(Stack *stk, const StackElement *element)
 
         stk->tail->previous = stk->tail->next = nullptr;
 
-        copyElement(&stk->tail->element, element);
+        stk->tail->size = elementSize;
+
+        stk->tail->element = calloc(1, elementSize);
+
+        if (stk->tail->element == nullptr)
+        {
+            free(stk->tail);
+
+            stk->head = stk->tail = nullptr;
+
+            return 0;
+        }
+
+        copyFunction(stk->tail->element, element);
 
         ++(stk->size);
     }
@@ -62,7 +78,22 @@ int stack_push(Stack *stk, const StackElement *element)
 
         temp->next = stk->tail;
 
-        copyElement(&stk->tail->element, element);
+        stk->tail->size = elementSize;
+
+        stk->tail->element = calloc(1, elementSize);
+
+        if (stk->tail->element == nullptr)
+        {
+            temp->next = nullptr;
+
+            free(stk->tail);
+
+            stk->tail = temp;
+
+            return 0;
+        }
+
+        copyFunction(stk->tail->element, element);
 
         ++(stk->size);
     }
@@ -70,7 +101,7 @@ int stack_push(Stack *stk, const StackElement *element)
     return 1;
 }
 
-int stack_pop(Stack *stk, StackElement *element)
+int stack_pop(Stack *stk, void *element, void (*copyFunction)(void *target, const void *source))
 {
     pointerAssert(stk    , nullptr);
     pointerAssert(element, nullptr);
@@ -82,10 +113,14 @@ int stack_pop(Stack *stk, StackElement *element)
 
     stk->tail = stk->tail->previous;
 
+    if (stk->tail != nullptr)
+        stk->tail->next = nullptr;
+
     --(stk->size);
 
-    copyElement(element, &temp->element);
+    copyFunction(element, temp->element);
 
+    free(temp->element);
     free(temp);
 
     if (stk->tail == nullptr)
@@ -94,7 +129,7 @@ int stack_pop(Stack *stk, StackElement *element)
     return 1;
 }
 
-int stack_size(const Stack *stk)
+size_t stack_size(const Stack *stk)
 {
     pointerAssert(stk, nullptr);
 
@@ -106,29 +141,4 @@ int stack_isEmpty(const Stack *stk)
     pointerAssert(stk, nullptr);
 
     return stk->size == 0;
-}
-
-static void copyElement(StackElement *target, const StackElement *source)
-{
-    //target->functionName = strdup(source->functionName);
-    //target->fileName     = strdup(source->fileName);
-    //target->line = source->line;
-
-    *target = *source;
-}
-
-void stack_print(const Stack *stk, FILE *filePtr)
-{
-    pointerAssert(stk    , nullptr);
-    pointerAssert(filePtr, nullptr);
-
-    int i = stk->size;
-
-    fprintf(filePtr, "=========================STACK_TRACE=========================\n");
-
-    for (Node *temp = stk->tail; temp != nullptr; temp = temp->previous, --i)
-        fprintf(filePtr, "#%d %120s at %30s in line %4d\n",
-                i, temp->element.functionName, temp->element.fileName, temp->element.line);
-
-    fprintf(filePtr, "=============================================================\n");
 }

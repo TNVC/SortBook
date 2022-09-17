@@ -9,21 +9,21 @@
 
 #if not defined NOT_DEBUG_MODE_
 
-#define FUNC_START                                                  \
-    {                                                               \
-        StackElement stackTraceTemp = {INFO_FOR_STACKTRACE};        \
-                                                                    \
-        stack_push(&StackTrace, &stackTraceTemp);                   \
+#define FUNC_START                                                                          \
+    {                                                                                       \
+        StackTraceElement stackTraceTemp = {INFO_FOR_STACKTRACE};                           \
+                                                                                            \
+        stack_push(&StackTrace, &stackTraceTemp, sizeof(StackTraceElement), copyElement);   \
     }
 
-#define FUNC_END                                                    \
-    {                                                               \
-        StackElement stackTraceTemp = {};                           \
-                                                                    \
-        stack_pop(&StackTrace, &stackTraceTemp);                    \
+#define FUNC_END                                                                            \
+    {                                                                                       \
+        StackTraceElement stackTraceTemp = {};                                              \
+                                                                                            \
+        stack_pop(&StackTrace, &stackTraceTemp, copyElement);                               \
     }
 
-#define PRINT_STACK_TRACE stack_print(&StackTrace, LogFile)
+#define PRINT_STACK_TRACE stackTracePrint(&StackTrace, LogFile)
 
 #else
 
@@ -33,12 +33,30 @@
 
 #endif
 
+typedef struct element {
+    const char *functionName;
+    const char *fileName;
+    int line;
+} StackTraceElement;
+
+/// Stack for stackTrace
 extern Stack StackTrace;
 
-extern int IsStackTraceAvalible;
+/// StackTrace is available
+extern int IsStackTraceAvailable;
 
+/// Init StackTrace
 int initStackTrace();
 
+/// Destroy StackTrace
 void destroyStackTrace();
+
+/// Print StackTrace into filePtr
+/// @param [in] stk Stack to print
+/// @param [in] filePtr File for print
+void stackTracePrint(const Stack *stk, FILE *filePtr);
+
+/// Copy function for stack functions
+void copyElement(void *target, const void *source);
 
 #endif

@@ -70,8 +70,6 @@ int main(const int argc, const char *argv[])
 
     writeAllLines  (strings.sequence, strings.stringCount, targetFile);
 
-    strings.sequence[1].buff = nullptr;
-
     newMergeSort   (strings.sequence, strings.stringCount, sizeof(String), reverseStringComparator);
 
     writeAllLines  (strings.sequence, strings.stringCount, targetFile);
