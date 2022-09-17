@@ -15,7 +15,7 @@ enum {
 /// @param [in] filename Name of file which need to read
 /// @return Size of buffer in heap
 /// @note If was fail to open file return FAIL_TO_OPEN, if was error to allocate memory return OUT_OF_MEM
-size_t readAllLines(char **buffer, const char *filename);
+size_t readFile(char **buffer, const char *filename);
 
 /// Write every line in file
 /// @param [in] strings String array

@@ -3,6 +3,8 @@
 #include "newmergesort.h"
 #include "asserts.h"
 
+//#pragma GCC diagnostic ignored "-Wpointer-arith"
+
 /// One merge iteration into source
 /// @param [in] source Source array
 /// @param [out] target Target array
@@ -28,7 +30,7 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
 void newMergeSort(void *buffer, size_t size, size_t elementSize, int (*comparator)(const void *, const void *))
 {
     pointerAssert (buffer,      nullptr);
-    functionAssert(comparator,  nullptr);
+    pointerAssert (comparator,  nullptr);
     decimalAssert (elementSize, 0);
 
     LOG_LINE;
@@ -67,16 +69,16 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
 {
     pointerAssert (source,      nullptr);
     pointerAssert (target,      nullptr);
-    functionAssert(comparator,  nullptr);
+    pointerAssert (comparator,  nullptr);
     decimalAssert (elementSize, 0);
 
-    void *first  = source,
-         *second = source;
+    char *first  = (char *)source,
+         *second = (char *)source;
 
     size_t firstSize  = 0,
            secondSize = 0;
 
-    void *end = source + size*elementSize;
+    char *end = (char *)source + size*elementSize;
 
     unsigned mergeCount = 0;
 
@@ -121,7 +123,7 @@ static unsigned mergeIteration(void *source, void *target, size_t size, size_t e
 
         ++mergeCount;
 
-        target += (firstSize + secondSize)*elementSize;
+        target = (char *)target + (firstSize + secondSize)*elementSize;
     }
 
     return mergeCount;
@@ -134,7 +136,7 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
     pointerAssert(firstSubArray,  nullptr);
     pointerAssert(secondSubArray, nullptr);
     pointerAssert(targetArray,    nullptr);
-    functionAssert(comparator,    nullptr);
+    pointerAssert(comparator,     nullptr);
     decimalAssert(elementSize,    0);
 
     LOG_LINE;
@@ -148,16 +150,16 @@ static void merge(void  *firstSubArray, void  *secondSubArray, void *targetArray
     while (currentIndex < firstSize + secondSize)
     {
         if      (i == firstSize)
-            temp = (secondSubArray + (j++)*elementSize);
+            temp = ((char *)secondSubArray + (j++)*elementSize);
         else if (j == secondSize)
-            temp = (firstSubArray  + (i++)*elementSize);
-        else if (comparator((firstSubArray + i*elementSize), (secondSubArray + j*elementSize)) < 0)
-            temp = (firstSubArray  + (i++)*elementSize);
+            temp = ((char *)firstSubArray  + (i++)*elementSize);
+        else if (comparator(((char *)firstSubArray + i*elementSize), ((char *)secondSubArray + j*elementSize)) < 0)
+            temp = ((char *)firstSubArray  + (i++)*elementSize);
         else
-            temp = (secondSubArray + (j++)*elementSize);
+            temp = ((char *)secondSubArray + (j++)*elementSize);
 
         LOG_LINE;
 
-        memcpy((targetArray + (currentIndex++)*elementSize), temp, elementSize);
+        memcpy(((char *)targetArray + (currentIndex++)*elementSize), temp, elementSize);
     }
 }

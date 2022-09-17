@@ -6,17 +6,17 @@
 #include "fiofunctions.h"
 #include "asserts.h"
 
-/// Check that string has only space chars
-/// @param [in] str Source string
-/// @return 1 if string is space or 0 if string isn`t space
-static int isSpaceString(const String *str);
-
 /// Return file size
 /// @param [in] filename Name of file
 /// @return Size of file in byte
 static size_t getFileSize(const char *filename);
 
-size_t readAllLines(char **buffer, const char *filename)
+/// Check that string has only space chars
+/// @param [in] str Source string
+/// @return 1 if string is space or 0 if string isn`t space
+static int isSpaceString(const String *str);
+
+size_t readFile(char **buffer, const char *filename)
 {
     pointerAssert(buffer,   nullptr);
     pointerAssert(filename, nullptr);
@@ -32,7 +32,7 @@ size_t readAllLines(char **buffer, const char *filename)
 
     size_t size = getFileSize(filename);
 
-    *buffer = (char *) calloc(size, sizeof(char));
+    *buffer = (char *) calloc(size + 1, sizeof(char));
 
     if (*buffer == nullptr)
     {
@@ -104,6 +104,19 @@ void writeBuffer(const char *buffer, size_t n, FILE *fileptr)
     }
 }
 
+static size_t getFileSize(const char *filename)
+{
+    pointerAssert(filename, nullptr);
+
+    LOG_LINE;
+
+    struct stat temp = {};
+
+    stat(filename, &temp);
+
+    return temp.st_size;
+}
+
 static int isSpaceString(const String *str)
 {
     pointerAssert(str, nullptr);
@@ -117,15 +130,3 @@ static int isSpaceString(const String *str)
     return 1;
 }
 
-static size_t getFileSize(const char *filename)
-{
-    pointerAssert(filename, nullptr);
-
-    LOG_LINE;
-
-    struct stat temp = {};
-
-    stat(filename, &temp);
-
-    return temp.st_size;
-}

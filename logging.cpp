@@ -7,33 +7,33 @@
 #define SEPARATOR "============================================="
 
 /// For extern link declaration
-FILE *logFile = nullptr;
+FILE *LogFile = nullptr;
 
 /// For extern link declaration
-int logLevel = initLog(LOG_FILE_NAME);
+int LogLevel = initLog(LOG_FILE_NAME);
 
 int initLog(const char *fileName)
 {
     if (fileName == nullptr)
-        logFile = fopen(LOG_FILE_NAME, "a");
+        LogFile = fopen(LOG_FILE_NAME, "a");
     else
-        logFile = fopen(fileName     , "a");
+        LogFile = fopen(fileName     , "a");
 
-    if (logFile == nullptr)
+    if (LogFile == nullptr)
         return 0x00;
 
-    setvbuf(logFile, nullptr, _IOFBF, 0);
+    setvbuf(LogFile, nullptr, _IOFBF, 0);
 
-    fprintf(logFile, SEPARATOR         SEPARATOR "\n");
+    fprintf(LogFile, SEPARATOR         SEPARATOR "\n");
     {
         time_t now = 0;
 
         time(&now);
 
-        fprintf(logFile, ctime(&now));
+        fprintf(LogFile, "%s", ctime(&now));
     }
-    fprintf(logFile, SEPARATOR "START" SEPARATOR "\n\n");
-    fprintf(logFile, SEPARATOR         SEPARATOR "\n");
+    fprintf(LogFile, SEPARATOR "START" SEPARATOR "\n\n");
+    fprintf(LogFile, SEPARATOR         SEPARATOR "\n");
 
     atexit(destroyLog);
 
@@ -74,10 +74,9 @@ int initLog(const char *fileName)
 
 void destroyLog()
 {
+    fprintf(LogFile, SEPARATOR       SEPARATOR "\n\n");
+    fprintf(LogFile, SEPARATOR "END" SEPARATOR "\n\n");
+    fprintf(LogFile, SEPARATOR       SEPARATOR "\n");
 
-    fprintf(logFile, SEPARATOR       SEPARATOR "\n\n");
-    fprintf(logFile, SEPARATOR "END" SEPARATOR "\n\n");
-    fprintf(logFile, SEPARATOR       SEPARATOR "\n");
-
-    fclose(logFile);
+    fclose(LogFile);
 }

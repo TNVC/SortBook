@@ -11,7 +11,7 @@
 
 const static char *DEFAULT_TARGET_FILE_NAME = "sortbook.txt";
 
-int main(int argc, char *argv[])
+int main(const int argc, const char *argv[])
 {
     setlocale(LC_ALL, "");
 
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     constructor(&strings);
 
-    strings.size = readAllLines(&strings.originBuffer, argv[1]);
+    strings.size = readFile(&strings.originBuffer, argv[1]);
 
     if (strings.size == (size_t) FAIL_TO_OPEN)
     {
@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
     qsort          (strings.sequence, strings.stringCount, sizeof(String), stringComparator);
 
     writeAllLines  (strings.sequence, strings.stringCount, targetFile);
+
+    strings.sequence[1].buff = nullptr;
 
     newMergeSort   (strings.sequence, strings.stringCount, sizeof(String), reverseStringComparator);
 

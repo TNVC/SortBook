@@ -9,7 +9,7 @@
 /// @param [in] first First char
 /// @param [in] second Second char
 /// @return 0 if first == second, negative value if first < second, positive value if first > second
-static int charComparator(char first, char second);
+static inline int charComparator(char first, char second);
 
 int stringComparator(const void *first, const void *second)
 {
@@ -20,6 +20,9 @@ int stringComparator(const void *first, const void *second)
 
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
+
+    pointerAssert(fstring->buff, nullptr);
+    pointerAssert(sstring->buff, nullptr);
 
     size_t i = 0, j = 0;
 
@@ -57,6 +60,9 @@ int reverseStringComparator(const void *first, const void *second)
     const String *fstring = (const String *) first;
     const String *sstring = (const String *) second;
 
+    pointerAssert(fstring->buff, nullptr);
+    pointerAssert(sstring->buff, nullptr);
+
     size_t i = fstring->size - 1,
            j = sstring->size - 1;
 
@@ -84,7 +90,7 @@ int reverseStringComparator(const void *first, const void *second)
     return charComparator(fstring->buff[i], sstring->buff[j]);
 }
 
-static int charComparator(char first, char second)
+static inline int charComparator(char first, char second)
 {
     first  = (char) toupper(first );
     second = (char) toupper(second);

@@ -12,6 +12,12 @@
     {                                                                                 \
         LOG_ERROR_INDEX(expression, i);                                               \
                                                                                       \
+        LogLevel = 0x00;                                                              \
+                                                                                      \
+        PRINT_STACK_TRACE;                                                            \
+                                                                                      \
+        destroyStackTrace();                                                          \
+                                                                                      \
         abort();                                                                      \
     }
 
@@ -36,13 +42,6 @@
         assert(pointerValue != badPointerValue);                                      \
                                                                                       \
         LOG_POINTER(pointerValue);                                                    \
-    }
-
-#define functionAssert(functionValue, badFunctionValue)                               \
-    {                                                                                 \
-        assert(functionValue != badFunctionValue);                                    \
-                                                                                      \
-        LOG_POINTER(functionValue);                                                   \
     }
 
 #define decimalAssert(decimalValue, badDecimalValue)                                  \
@@ -71,27 +70,24 @@
     {                                                                                 \
         LOG_ERROR(expression);                                                        \
                                                                                       \
+        LogLevel = 0x00;                                                              \
+                                                                                      \
+        PRINT_STACK_TRACE;                                                            \
+                                                                                      \
+        destroyStackTrace();                                                          \
+                                                                                      \
         abort();                                                                      \
     }
 
 #else
 
 #define arrayAssert(expression, i)                           ;
-
 #define arrayPointerAssert(array, badValue, size)            ;
-
 #define arrayDecimalAssert(array, badValue, size)            ;
-
 #define pointerAssert(pointerValue, badPointerValue)         ;
-
-#define functionAssert(functionValue, badFunctionValue)      ;
-
 #define decimalAssert(decimalValue, badDecimalValue)         ;
-
 #define pointerIndexAssert(pointerValue, badPointerValue, i) ;
-
 #define decimaIndexlAssert(decimalValue, badDecimalValue, i) ;
-
 #define assert(expression)                                   ;
 
 #endif
